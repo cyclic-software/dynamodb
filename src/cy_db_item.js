@@ -66,7 +66,6 @@ let upsert = async function(item,opts){
         ReturnConsumedCapacity:"TOTAL",
         ReturnValues:"ALL_OLD",
     }
-    console.log(record)
     if(opts.condition){
       record.Expected = opts.condition
     }

@@ -9,7 +9,8 @@ const run = async function(){
     res = await CyclicDb.item('apps','a').set({
         name: 'mike',
         zip:19027,
-        val: 'val'
+        val: '',
+        val2: ''
     },{
         $index:['name']
     })
