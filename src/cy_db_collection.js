@@ -70,7 +70,7 @@ class CyclicCollection{
           };
           let res = await docClient.send(new QueryCommand(params))
           if(!res.Items.length){
-            throw 'Collection does not exist'
+            return null
           }
           return res.Items[0]
     }

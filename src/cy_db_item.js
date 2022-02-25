@@ -1,5 +1,4 @@
 
-const DateTime = require('luxon').DateTime
 const {docClient} = require('./ddb_client')
 const { UpdateCommand, QueryCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb")
 
@@ -30,7 +29,12 @@ let upsert = async function(item,opts){
     let ops = []
 
     let {attr_names, attr_vals, expression} = make_sub_expr(item,'set','s')
-
+    let d = new Date().toISOString()
+    attr_names['#kc'] = 'created'
+    attr_names['#ku'] = 'updated'
+    attr_vals[':kc'] = d
+    attr_vals[':ku'] = d
+    expression = `${expression}, #ku = :ku, #kc = if_not_exists(#kc,:kc)`
     if(opts['$unset']){
             d_expression = []
             opts['$unset'].forEach((k,i)=>{
@@ -199,7 +203,7 @@ class CyclicItem{
             pk: `${this.collection}#${this.key}`,
             sk: `${this.collection}#${this.key}`,
             keys_gsi: this.collection,
-            keys_gsi_sk: DateTime.utc().toISO(),
+            keys_gsi_sk: new Date().toISOString(),
             ...props
         }
 

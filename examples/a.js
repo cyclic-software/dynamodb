@@ -20,6 +20,8 @@ const run = async function(){
 
 
     res = await CyclicDb.index('name').find('mike')
+
+    res = await CyclicDb.collection('apps').latest()
     // let res = await CyclicDb.item('apps','a').set({
     //     // name:'mike',
     //     type:'b'
