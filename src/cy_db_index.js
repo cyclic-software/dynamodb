@@ -20,7 +20,7 @@ class CyclicIndex{
           };
           
           if(this.collection){
-            params.KeyConditionExpression = `${params.KeyConditionExpression} and begins_with(sk,:sk)`,
+            params.KeyConditionExpression = `${params.KeyConditionExpression} and begins_with(gsi_s_sk,:sk)`,
             params.ExpressionAttributeValues[':sk'] = `${this.collection}#`
           }
           

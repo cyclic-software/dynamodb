@@ -54,7 +54,6 @@ let upsert = async function(item,opts){
             })
             expression = `${expression} remove ${d_expression.join(', ')}`
     }
-
     var record = {
         TableName : process.env.CYCLIC_DB,
         Key:{
@@ -67,7 +66,7 @@ let upsert = async function(item,opts){
         ReturnConsumedCapacity:"TOTAL",
         ReturnValues:"ALL_OLD",
     }
-
+    console.log(record)
     if(opts.condition){
       record.Expected = opts.condition
     }
@@ -206,8 +205,8 @@ class CyclicItem{
         }
 
         let index_records = []
-        if(opts.indexBy){
-            index_records = opts.indexBy.map(idx=>{
+        if(opts.$index){
+            index_records = opts.$index.map(idx=>{
                 let index = {
                     name: idx,
                 //     readOptimized: false
@@ -270,8 +269,8 @@ class CyclicItemFragment{
             ...props
         }
         let index_records = []
-        if(opts.indexBy){
-            index_records = opts.indexBy.map(idx=>{
+        if(opts.$index){
+            index_records = opts.$index.map(idx=>{
                 let index = {
                     name: idx,
                 }

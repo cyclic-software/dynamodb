@@ -79,6 +79,11 @@ class CyclicCollection{
       return new CyclicIndex(name, this.collection)
     }
 
+    find(name, value){
+      let idx = new CyclicIndex(name, this.collection)
+      return idx.find(value)
+    }
+
 }
 
 

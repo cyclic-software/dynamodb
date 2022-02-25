@@ -4,12 +4,24 @@ const CyclicDb = require('../src/')
 
 
 const run = async function(){
-    let res = await CyclicDb.item('apps','a').set({
+    let res 
+
+    res = await CyclicDb.item('apps','a').set({
+        name: 'mike',
+        zip:19027,
+        val: 'val'
+    },{
+        $index:['name']
+    })
+    
+    res = await CyclicDb.item('apps','a').set({
         name: 'mike',
         zip:19027
     },{
-        indexBy:['name']
+        $index:['name'],
+        $unset:['val']
     })
+
     res = await CyclicDb.item('apps','a').get()
     res = await CyclicDb.item('apps','a').fragment('bbb').set({
         abc:10
@@ -21,15 +33,11 @@ const run = async function(){
 
     res = await CyclicDb.index('name').find('mike')
 
+    res = await CyclicDb.collection('apps').list()
     res = await CyclicDb.collection('apps').latest()
     res = await CyclicDb.collection('apps').item('a').get()
-    // let res = await CyclicDb.item('apps','a').set({
-    //     // name:'mike',
-    //     type:'b'
-    // },{
-    //     // indexBy:['name']
-    //     $unset:['name']
-    // })
+    res = await CyclicDb.collection('apps').find('name','mike')
+
     console.log(res)
 }
 
