@@ -182,7 +182,7 @@ class CyclicItem{
             throw "Item not found"
         }
         this.props = sanitize_item(res.Items[0])
-        return this
+        return res.Items[0]
     }
 
      async set(props, opts={}){
