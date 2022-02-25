@@ -2,6 +2,11 @@
 
 
 ```js
+
+process.env.CYCLIC_DB = 'CyclicDB'
+const CyclicDb = require('cyclic-dynamodb')
+
+let res
       res = await CyclicDb.item('apps','a').set({
         name: 'mike',
         zip:19027,
