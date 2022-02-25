@@ -21,19 +21,9 @@ const unmarshallOptions = {
 
 const translateConfig = { marshallOptions, unmarshallOptions };
 
-// Create the DynamoDB Document client.
 const docClient = DynamoDBDocumentClient.from(ddbClient, translateConfig);
 
 
-
-// const AWS = require("aws-sdk");
-// AWS.config.update({
-//     region: process.env.AWS_REGION || "us-east-2",
-//   });
-  
-// const docClient = new AWS.DynamoDB.DocumentClient({
-//     // convertEmptyValues:true
-// });
 
 
 module.exports = {
