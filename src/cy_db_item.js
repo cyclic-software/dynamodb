@@ -71,7 +71,6 @@ let upsert = async function(item,opts){
     if(opts.condition){
       record.Expected = opts.condition
     }
-    console.log(record)
     ops.push(
         docClient.send(new UpdateCommand(record))
         )
@@ -122,7 +121,6 @@ const list_sks = async function(pk,sk_prefix = null){
     }
 
 
-    console.log(params)
     let res = await docClient.send(new QueryCommand(params))
 
     return res.Items.map(d=>{

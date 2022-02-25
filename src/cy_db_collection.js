@@ -16,7 +16,7 @@ class CyclicCollection{
       let item = new CyclicItem(this.collection,key)
       return item.get()
     }
-    async set(key,props,opts){
+    async set(key, props, opts){
       let item = new CyclicItem(this.collection,key)
       return item.set(props,opts)
     }
