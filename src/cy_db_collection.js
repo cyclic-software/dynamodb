@@ -1,14 +1,6 @@
 
-var AWS = require("aws-sdk");
-const DateTime = require('luxon').DateTime
-
-AWS.config.update({
-  region: process.env.AWS_REGION || "us-east-2",
-});
-
-var docClient = new AWS.DynamoDB.DocumentClient({
-    convertEmptyValues:true
-});
+const {  QueryCommand } = require("@aws-sdk/lib-dynamodb")
+const {docClient} = require('./ddb_client')
 
 const CyclicIndex = require('./cy_db_index')
 const CyclicItem = require('./cy_db_item')
@@ -36,16 +28,22 @@ class CyclicCollection{
               TableName: process.env.CYCLIC_DB,
               Limit: limit,
               IndexName: 'keys_gsi',
-              KeyConditions:{
-                keys_gsi:{
-                  ComparisonOperator:'EQ',
-                  AttributeValueList: [this.collection]
-                }
+              // KeyConditions:{
+              //   keys_gsi:{
+              //     ComparisonOperator:'EQ',
+              //     AttributeValueList: [this.collection]
+              //   }
+              // },
+              KeyConditionExpression: 'keys_gsi = :keys_gsi',
+              ExpressionAttributeValues:{
+                ':keys_gsi':this.collection,
               },
               ScanIndexForward:false,
               ExclusiveStartKey: next
             };
-            var res = await docClient.query(params).promise();
+            let res = await docClient.send(new QueryCommand(params))
+            // var res = await docClient.query(params).promise();
+
             next = res.LastEvaluatedKey
             results = results.concat(res.Items)
           }while(results && results.length<limit)
@@ -58,15 +56,22 @@ class CyclicCollection{
             TableName : process.env.CYCLIC_DB,
             Limit: 1,
             IndexName: 'keys_gsi',
-            KeyConditions:{
-              keys_gsi:{
-                ComparisonOperator:'EQ',
-                AttributeValueList: [this.collection]
-              }
+            KeyConditionExpression: 'keys_gsi = :keys_gsi',
+            ExpressionAttributeValues:{
+              ':keys_gsi':this.collection,
             },
+            // KeyConditions:{
+            //   keys_gsi:{
+            //     ComparisonOperator:'EQ',
+            //     AttributeValueList: [this.collection]
+            //   }
+            // },
             ScanIndexForward:false
           };
-          let res = await docClient.query(params).promise();
+          let res = await docClient.send(new QueryCommand(params))
+          if(!res.Items.length){
+            throw 'Collection does not exist'
+          }
           return res.Items[0]
     }
 

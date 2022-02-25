@@ -1,6 +1,6 @@
 
-// const CyclicCollection = require('./cy_db_collection')
-// const CyclicIndex = require('./cy_db_index')
+const CyclicCollection = require('./cy_db_collection')
+const CyclicIndex = require('./cy_db_index')
 const CyclicItem = require('./cy_db_item')
 
 class CyclicDb {
@@ -9,13 +9,13 @@ class CyclicDb {
         return new CyclicItem(collection, key)
     }
 
-    // static collection(collection){
-    //     return new CyclicCollection(collection)
-    // }
+    static collection(collection){
+        return new CyclicCollection(collection)
+    }
 
-    // static index(name){
-    //     return new CyclicIndex(name)
-    // }
+    static index(name){
+        return new CyclicIndex(name)
+    }
 }
 
 

@@ -1,16 +1,7 @@
 
-var AWS = require("aws-sdk");
-const DateTime = require('luxon').DateTime
 
-AWS.config.update({
-  region: process.env.AWS_REGION || "us-east-2",
-});
-
-var docClient = new AWS.DynamoDB.DocumentClient({
-    convertEmptyValues:true
-});
-
-
+const {  QueryCommand } = require("@aws-sdk/lib-dynamodb")
+const {docClient} = require('./ddb_client')
 class CyclicIndex{
     constructor(name, collection=null, props={}){
         this.name = name
@@ -22,23 +13,19 @@ class CyclicIndex{
         let params = {
             TableName : process.env.CYCLIC_DB,
             IndexName: 'gsi_s',
-            KeyConditions:{
-              gsi_s:{
-                ComparisonOperator:'EQ',
-                AttributeValueList: [`${this.name}#${key}`]
-              },
-            },
+            KeyConditionExpression: 'gsi_s = :gsi_s',
+            ExpressionAttributeValues:{
+                ':gsi_s':`${this.name}#${key}`,
+            }
           };
           
           if(this.collection){
-            params.KeyConditions.gsi_s_sk = {
-              ComparisonOperator:'BEGINS_WITH',
-              AttributeValueList: [`${this.collection}#`]
-            }
+            params.KeyConditionExpression = `${params.KeyConditionExpression} and begins_with(sk,:sk)`,
+            params.ExpressionAttributeValues[':sk'] = `${this.collection}#`
           }
           
 
-          let res = await docClient.query(params).promise();
+          let res = await docClient.send(new QueryCommand(params));
           return res.Items
     }
 
