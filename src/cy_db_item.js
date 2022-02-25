@@ -1,63 +1,76 @@
 
-const AWS = require("aws-sdk");
+const {docClient} = require('./ddb_client')
 const DateTime = require('luxon').DateTime
-const utils = require('../utils')
-AWS.config.update({
-  region: process.env.AWS_REGION || "us-east-2",
-});
+const utils = require('./utils')
+const { UpdateCommand, QueryCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb")
 
-var docClient = new AWS.DynamoDB.DocumentClient({
-    // convertEmptyValues:true
-});
+
+
+let make_sub_expr = function(item, expr_type, expr_prefix=''){
+    let expression = []
+    let attr_names = {}
+    let attr_vals = {}
+    Object.keys(item).forEach((k,i)=>{
+        if(k=='pk' || k == 'sk' || item[k] === undefined){return true}
+        let v = item[k]
+        attr_names[`#k${expr_prefix}${i}`] = k
+        attr_vals[`:v${expr_prefix}${i}`] = v
+        expression.push(`#k${expr_prefix}${i} = :v${expr_prefix}${i}`)
+
+    })
+    expression = `${expr_type} ${expression.join(', ')}`
+    return {
+        attr_names,
+        attr_vals,
+        expression
+    }
+}
 
 let upsert = async function(item,opts){
     let ops = []
-    var AttributeUpdates = {}
-    Object.keys(item).forEach((k)=>{
-      if(k=='pk' || k == 'sk' || item[k] === undefined){return true}
-      if(item[k] === '') {throw new Error(`pk key [${k}] should never be blank`)}
-      AttributeUpdates[k] = {
-        Action: 'PUT',
-        Value: item[k]
-      }
-    })
 
-    AttributeUpdates['updated'] = {
-      Action: 'PUT',
-      Value: DateTime.utc().toISO()
-    }
+    let {attr_names, attr_vals, expression} = make_sub_expr(item,'set','s')
+
     if(opts['$unset']){
-            Object.keys(opts['$unset']).forEach(k=>{
-                AttributeUpdates[k] = {
-                    Action: 'DELETE',
-                }
+            d_expression = []
+            opts['$unset'].forEach((k,i)=>{
+                attr_names[`#dk${i}`] = k
+                d_expression.push(`#dk${i}`)
                 if(!item.sk.startsWith('fragment#index') && !item.sk.startsWith('index#')){
-                    ops.push(docClient.delete({
-                        TableName : process.env.CYCLIC_DB,
-                        Key: {
-                        pk: item.pk,
-                        sk: item.sk.startsWith('fragment') ? `fragment#index#${k}` : `index#${k}`
-                        }
-                    }).promise())
+                    ops.push(
+                        docClient.send(new DeleteCommand({
+                            TableName : process.env.CYCLIC_DB,
+                            Key: {
+                                pk: item.pk,
+                                sk: item.sk.startsWith('fragment') ? `fragment#index#${k}` : `index#${k}`
+                            }
+                        }))
+                    )
                 }
             })
+            expression = `${expression} remove ${d_expression.join(', ')}`
     }
 
     var record = {
-      TableName : process.env.CYCLIC_DB,
-      Key:{
-        pk: item.pk,
-        sk: item.sk || item.pk
-      },
-      AttributeUpdates: AttributeUpdates,
-      ReturnConsumedCapacity:"TOTAL",
-      ReturnValues:"ALL_OLD",
+        TableName : process.env.CYCLIC_DB,
+        Key:{
+            pk: item.pk,
+            sk: item.sk || item.pk
+        },
+        UpdateExpression: expression,
+        ExpressionAttributeNames: attr_names,
+        ExpressionAttributeValues: attr_vals,
+        ReturnConsumedCapacity:"TOTAL",
+        ReturnValues:"ALL_OLD",
     }
 
     if(opts.condition){
       record.Expected = opts.condition
     }
-    ops.push(docClient.update(record).promise())
+    console.log(record)
+    ops.push(
+        docClient.send(new UpdateCommand(record))
+        )
 
     try{
         let res = await Promise.all(ops)
@@ -177,6 +190,9 @@ class CyclicItem{
           };
           
           let res = await docClient.query(params).promise();
+          if(!res.Items.length){
+              throw "Item not found"
+          }
           this.props = sanitize_item(res.Items[0])
           return this
     }
