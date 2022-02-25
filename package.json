@@ -1,11 +1,11 @@
 {
     "type": "commonjs",
     "name": "cyclic-dynamodb",
-    "version": "0.0.4",
+    "version": "0.0.2",
     "description": "",
     "main": "src/index.js",
     "scripts": {
-        "p": "cd src && npm version patch && cd .. && rm -rf ./dist && mkdir -p dist && cp src/* dist/ && cp README.md dist && cd dist &&  npm publish"
+        "p": "cd src && npm version patch && cd .. &&  npm publish"
     },
     "keywords": [],
     "author": "",
