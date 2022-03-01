@@ -179,7 +179,7 @@ class CyclicItem{
             
         let res = await docClient.send(new QueryCommand(params))
         if(!res.Items.length){
-            throw "Item not found"
+            return null
         }
         this.props = sanitize_item(res.Items[0])
         return res.Items[0]
