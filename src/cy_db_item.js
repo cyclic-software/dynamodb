@@ -3,7 +3,6 @@ const {docClient} = require('./ddb_client')
 const { UpdateCommand, QueryCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb")
 
 const utils = require('./utils')
-const assert = require("assert");
 
 
 let make_sub_expr = function(item, expr_type, expr_prefix=''){
@@ -126,15 +125,37 @@ const list_sks = async function(pk,sk_prefix = null){
         return d.sk
     })
 }
-const validate_strings = function(s){
-    assert(typeof(s)=='string', `Parameter must be a string value, received: ${s}`)
-    assert(!s.includes('#'), `Parameter must not contain # character, received: ${s}`)
+
+class ValidationError extends Error {  
+    constructor (message) {
+      super(message)
+  
+      // assign the error class name in your custom error (as a shortcut)
+      this.name = this.constructor.name
+      // capturing the stack trace keeps the reference to your error class
+      Error.captureStackTrace(this, this.constructor);
+      this.stack = this.stack.split('\n').filter(l=>{return !l.includes('cy_db')}).join("\n")
+    //   console.log(this.stack)
+      // you may also assign additional properties to your error
+    //   this.isSleepy = true
+    }
+  }
+
+  
+
+const validate_strings = function(s, param_name){
+    if(typeof(s)!=='string'){
+        throw new ValidationError(`${param_name} must be a string value, received: ${s}`)
+    }
+    if(s.includes('#')){
+        throw new ValidationError(`${param_name} must not contain # character, received: ${s}`)
+    }
     return true
 }
 class CyclicItem{
     constructor(collection,key, props={}){
-        validate_strings(collection)
-        validate_strings(key)
+        validate_strings(collection, "Collection Name")
+        validate_strings(key, "Item Key")
 
         this.collection = collection
         this.key = key
@@ -247,8 +268,8 @@ class CyclicItem{
 
 class CyclicItemFragment{
     constructor(type, name, props ,parent){
-        validate_strings(collection)
-        validate_strings(key)
+        validate_strings(type, "Fragment Type")
+        validate_strings(key, "Fragment Key")
         
         this.type = type
         this.name = name
