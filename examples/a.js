@@ -13,7 +13,7 @@ const run = async function(){
         $index: ['type','name']
     })
 
-    res = await animals.delete('leo')
+    res = await animals.delete()
     
     // res = await CyclicDb.item('apps','a').set({
     //     name: 'mike',
