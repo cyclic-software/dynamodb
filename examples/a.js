@@ -16,6 +16,14 @@ const run = async function(){
     res = await animals.list()
     res = await animals.latest()
     res = await animals.index('color').find('orange')
+
+    res = await animals.item('cat').fragment('c').set({
+        p:1,
+        color:'orange'
+    },{
+        $index : ['color']
+    })
+    res = await animals.index('color').find('orange')
     // res = await animals.delete('leo')
     
     // res = await CyclicDb.item('apps','a').set({

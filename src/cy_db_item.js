@@ -34,7 +34,15 @@ let upsert = async function(item,opts){
     attr_vals[':kc'] = d
     attr_vals[':ku'] = d
     expression = `${expression}, #ku = :ku, #kc = if_not_exists(#kc,:kc)`
+    
     if(opts['$unset']){
+
+            for (let k of Object.keys(opts.$unset)){
+                if(Object.keys(item).includes(k)){
+                    throw `${k}: property can not appear in both set and $unset`
+                }
+            }
+            
             d_expression = []
             opts['$unset'].forEach((k,i)=>{
                 attr_names[`#dk${i}`] = k
@@ -142,6 +150,9 @@ class CyclicItem{
     }
 
     static from_dynamo(d){
+        if(d.sk.startsWith('fragment')){
+            return CyclicItemFragment.from_dynamo(d)
+        }
         let [collection,key] = d.pk.split('#')
         let props = {...d}
         let opts = {}
@@ -211,14 +222,6 @@ class CyclicItem{
             this.$index = opts.$index
         }
 
-        if(opts.$unset){
-            for (let k of Object.keys(opts.$unset)){
-                if(Object.keys(props).includes(k)){
-                    throw `${k}: property can not appear in both set and $unset`
-                }
-            }
-        }
-
         let r = {
             pk: `${this.collection}#${this.key}`,
             sk: `${this.collection}#${this.key}`,
@@ -274,15 +277,35 @@ class CyclicItem{
 }
 
 class CyclicItemFragment{
-    constructor(type, name, props ,parent){
+    constructor(type, key, props ,parent, opts={}){
         validate_strings(type, "Fragment Type")
         validate_strings(key, "Fragment Key")
         
         this.type = type
-        this.name = name
+        this.key = key
         this.parent = parent
-        this.props = props
+
+        this.props = exclude_cy_keys(props)
+        if(opts.$index){
+            this.$index = opts.$index
+        }
     }   
+
+    static from_dynamo(d){
+        let [parent_collection,parent_key] = d.pk.split('#')
+        let [fragment,type,key] = d.sk.split('#')
+        let props = {...d}
+        let opts = {}
+        if(d.keys_gsi_sk){
+            props.updated = d.keys_gsi_sk
+        }
+        if(d.$index){
+            opts.$index = d.$index
+        }
+        let parent = new CyclicItem(parent_collection,parent_key)
+        return new CyclicItemFragment(type,key,props,parent, opts)
+    }
+
     async indexes(){
         let index = await list_sks(`${this.parent.collection}#${this.parent.key}`, `fragment#index#`)
         return indexes.map(d=>{
@@ -290,18 +313,34 @@ class CyclicItemFragment{
         })
     }
 
+    async delete(props={},opts={}){
+        let indexes = await this.indexes()
+        let ops = []
+        ops.push(docClient.send(new DeleteCommand({
+                    TableName : process.env.CYCLIC_DB,
+                    Key: {
+                        pk: `${this.parent.collection}#${this.parent.key}`,
+                        sk: `fragment#${this.type}#${this.key}`
+                    }
+                })))
+        indexes.forEach(idx=>{
+            ops.push(docClient.send(new DeleteCommand({
+                TableName : process.env.CYCLIC_DB,
+                Key: {
+                    pk: `${this.parent.collection}#${this.parent.key}`,
+                    sk: `fragment#index#${this.type}#${idx}`,
+                }
+            })))
+        })
+        await Promise.all(ops)
+        return true
+    }
+
     async set(props, opts={}){
         this.props = {...this.props, ...props}
-        if(opts.$unset){
-            for (let k of Object.keys(opts.$unset)){
-                if(Object.keys(props).includes(k)){
-                    throw "A property can not appear in both set and $unset"
-                }
-            }
-        }
         let r = {
             pk: `${this.parent.collection}#${this.parent.key}`,
-            sk: `fragment#${this.type}#${this.name}`,
+            sk: `fragment#${this.type}#${this.key}`,
             ...props
         }
         let index_records = []
@@ -327,12 +366,12 @@ class CyclicItemFragment{
             ...index_records
         ])
 
-        return this.parent
+        return this
     }
 
     async get(){
         let pk = `${this.parent.collection}#${this.parent.key}`
-        let sk = `fragment#${this.type}#${this.name}`
+        let sk = `fragment#${this.type}#${this.key}`
         let params = {
             TableName: process.env.CYCLIC_DB,
             KeyConditionExpression: 'pk = :pk and sk = :sk',
@@ -343,9 +382,10 @@ class CyclicItemFragment{
         };
             
         let res = await docClient.send(new QueryCommand(params))
-        let results = res.Items
 
-        return results
+        return res.Items.map(r=>{
+            return CyclicItemFragment.from_dynamo(r)
+        })
     }
 
     async list(){
@@ -363,7 +403,9 @@ class CyclicItemFragment{
         };
             
         let res = await docClient.send(new QueryCommand(params))
-        return res.Items
+        return res.Items.map(r=>{
+            return CyclicItemFragment.from_dynamo(r)
+        })
         
     }
 }
