@@ -1,5 +1,11 @@
 # db-sdk
 
+###to fix:
+`undefined` keys should not be allowed, validate key types
+add delete method on collection for an item
+delete method returns a bunch of garbage
+delete didnt delete index records created from blank index
+
 
 ```js
 
