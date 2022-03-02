@@ -20,6 +20,12 @@ class CyclicCollection{
       let item = new CyclicItem(this.collection,key)
       return item.set(props,opts)
     }
+    
+    async delete(key, props, opts){
+      let item = new CyclicItem(this.collection,key)
+      return item.delete()
+    }
+    
     async list(limit){
           let next = null
           let results = []

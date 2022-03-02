@@ -3,6 +3,7 @@ const {docClient} = require('./ddb_client')
 const { UpdateCommand, QueryCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb")
 
 const utils = require('./utils')
+const assert = require("assert");
 
 
 let make_sub_expr = function(item, expr_type, expr_prefix=''){
@@ -125,13 +126,20 @@ const list_sks = async function(pk,sk_prefix = null){
         return d.sk
     })
 }
-
+const validate_strings = function(s){
+    assert(typeof(s)=='string', `Parameter must be a string value, received: ${s}`)
+    assert(!s.includes('#'), `Parameter must not contain # character, received: ${s}`)
+    return true
+}
 class CyclicItem{
     constructor(collection,key, props={}){
+        validate_strings(collection)
+        validate_strings(key)
+
         this.collection = collection
         this.key = key
         this.props = props
-    }   
+    }
     async indexes(){
         let indexes = await list_sks(`${this.collection}#${this.key}`, `index#`)
         return indexes.map(d=>{
@@ -147,22 +155,20 @@ class CyclicItem{
 
     async delete(props={},opts={}){
         let ops = []
-        if (!Object.keys(props).length){
-            let sks = await list_sks(`${this.collection}#${this.key}`)
-            sks.forEach(sk=>{
-                 ops.push(
-                    docClient.send(new DeleteCommand({
-                        TableName : process.env.CYCLIC_DB,
-                        Key: {
-                            pk: `${this.collection}#${this.key}`,
-                            sk: sk
-                        }
-                    }))
-                    )
-            })
-        }
+        let sks = await list_sks(`${this.collection}#${this.key}`)
+        sks.forEach(sk=>{
+                ops.push(
+                docClient.send(new DeleteCommand({
+                    TableName : process.env.CYCLIC_DB,
+                    Key: {
+                        pk: `${this.collection}#${this.key}`,
+                        sk: sk
+                    }
+                }))
+                )
+        })
         let res = await Promise.all(ops)
-        return res
+        return true
     }
     
     async get(){
@@ -241,6 +247,9 @@ class CyclicItem{
 
 class CyclicItemFragment{
     constructor(type, name, props ,parent){
+        validate_strings(collection)
+        validate_strings(key)
+        
         this.type = type
         this.name = name
         this.parent = parent
