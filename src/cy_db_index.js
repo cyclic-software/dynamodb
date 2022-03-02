@@ -2,8 +2,11 @@
 
 const {  QueryCommand } = require("@aws-sdk/lib-dynamodb")
 const {docClient} = require('./ddb_client')
+const CyclicItem = require('./cy_db_item')
+const { validate_strings} = require('./cy_db_utils')
 class CyclicIndex{
     constructor(name, collection=null, props={}){
+        validate_strings(name, 'Index Name')
         this.name = name
         this.collection = collection
 
@@ -26,7 +29,11 @@ class CyclicIndex{
           
 
           let res = await docClient.send(new QueryCommand(params));
-          return res.Items
+
+          res = res.Items.map(r=>{
+              return CyclicItem.from_dynamo(r)
+          })
+          return res
     }
 
 }

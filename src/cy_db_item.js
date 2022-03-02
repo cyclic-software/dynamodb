@@ -1,8 +1,7 @@
 
 const {docClient} = require('./ddb_client')
 const { UpdateCommand, QueryCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb")
-
-const utils = require('./utils')
+const {ValidationError, RetryableError, validate_strings} = require('./cy_db_utils')
 
 
 let make_sub_expr = function(item, expr_type, expr_prefix=''){
@@ -78,30 +77,13 @@ let upsert = async function(item,opts){
         return res
     }catch(e){
         if(e.code == 'ConditionalCheckFailedException'){
-        throw new utils.RetryableError(`${item.pk} ${e.code}`)
+        throw new RetryableError(`${item.pk} ${e.code}`)
         }
         throw e
     }
 }
 
 
-const sanitize_item = function(a){
-    let [collection,key] = a.pk.split('#')
-    delete a.pk
-    delete a.sk
-    delete a.qsk
-    delete a.key
-    Object.keys(a).forEach(k=>{
-        if(k.startsWith('_cy_')){
-            delete a[k]
-        }
-    })
-    return {
-        collection,
-        key,
-        ...a
-    }
-}
 
 const list_sks = async function(pk,sk_prefix = null){
     let params = {
@@ -126,41 +108,52 @@ const list_sks = async function(pk,sk_prefix = null){
     })
 }
 
-class ValidationError extends Error {  
-    constructor (message) {
-      super(message)
-  
-      // assign the error class name in your custom error (as a shortcut)
-      this.name = this.constructor.name
-      // capturing the stack trace keeps the reference to your error class
-      Error.captureStackTrace(this, this.constructor);
-      this.stack = this.stack.split('\n').filter(l=>{return !l.includes('cy_db')}).join("\n")
-    //   console.log(this.stack)
-      // you may also assign additional properties to your error
-    //   this.isSleepy = true
-    }
-  }
 
   
 
-const validate_strings = function(s, param_name){
-    if(typeof(s)!=='string'){
-        throw new ValidationError(`${param_name} must be a string value, received: ${s}`)
-    }
-    if(s.includes('#')){
-        throw new ValidationError(`${param_name} must not contain # character, received: ${s}`)
-    }
-    return true
+
+
+const exclude_cy_keys = function(o){
+    delete o.pk
+    delete o.sk
+    delete o.keys_gsi
+    delete o.keys_gsi_sk
+    delete o.gsi_s
+    delete o.gsi_s_sk
+    delete o.gsi_1
+    delete o.gsi_2
+    delete o.gsi_s2
+    delete o.gsi_prj
+    delete o.$index
+    return o
 }
 class CyclicItem{
-    constructor(collection,key, props={}){
+    constructor(collection,key, props={},opts={}){
+
         validate_strings(collection, "Collection Name")
         validate_strings(key, "Item Key")
 
         this.collection = collection
         this.key = key
-        this.props = props
+        this.props = exclude_cy_keys(props)
+        if(opts.$index){
+            this.$index = opts.$index
+        }
     }
+
+    static from_dynamo(d){
+        let [collection,key] = d.pk.split('#')
+        let props = {...d}
+        let opts = {}
+        if(d.keys_gsi_sk){
+            props.updated = d.keys_gsi_sk
+        }
+        if(d.$index){
+            opts.$index = d.$index
+        }
+        return new CyclicItem(collection,key,props,opts)
+    }
+
     async indexes(){
         let indexes = await list_sks(`${this.collection}#${this.key}`, `index#`)
         return indexes.map(d=>{
@@ -208,12 +201,16 @@ class CyclicItem{
         if(!res.Items.length){
             return null
         }
-        this.props = sanitize_item(res.Items[0])
-        return res.Items[0]
+        this.props = exclude_cy_keys(res.Items[0])
+        return this
     }
 
      async set(props, opts={}){
         this.props = {...this.props, ...props}
+        if(opts.$index){
+            this.$index = opts.$index
+        }
+
         if(opts.$unset){
             for (let k of Object.keys(opts.$unset)){
                 if(Object.keys(props).includes(k)){
@@ -227,21 +224,29 @@ class CyclicItem{
             sk: `${this.collection}#${this.key}`,
             keys_gsi: this.collection,
             keys_gsi_sk: new Date().toISOString(),
+            $index: this.$index,
             ...props
         }
 
         let index_records = []
         if(opts.$index){
+            opts.$index.forEach(idx=>{
+                let prop_keys = Object.keys(props)
+                if(!prop_keys.includes(idx)){
+                    throw new ValidationError(`index property "${idx}" does not exist in object properties ["${prop_keys.join('", "')}"]`)
+                }
+            })
+            
             index_records = opts.$index.map(idx=>{
                 let index = {
                     name: idx,
-                //     readOptimized: false
                 }
                 let index_item = {
                     pk: `${this.collection}#${this.key}`,
                     sk: `index#${index.name}`,
                     gsi_s: `${index.name}#${this.props[index.name]}`,
                     gsi_s_sk: `${this.collection}#${this.key}`,
+                    $index: this.$index,
                     ...props
                 }
                 return upsert(index_item,opts)
@@ -259,10 +264,12 @@ class CyclicItem{
     }
 
 
+
     fragment(type, name = '', props = {}){
         return new CyclicItemFragment(type, name, props, this)
 
     }
+
 
 }
 

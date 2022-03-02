@@ -10,10 +10,13 @@ const run = async function(){
         type:'cat',
         color:'orange'
     },{
-        $index: ['type','name']
+        $index: ['color']
     })
 
-    res = await animals.delete()
+    res = await animals.list()
+    res = await animals.latest()
+    res = await animals.index('color').find('orange')
+    // res = await animals.delete('leo')
     
     // res = await CyclicDb.item('apps','a').set({
     //     name: 'mike',

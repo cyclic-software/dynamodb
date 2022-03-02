@@ -4,9 +4,12 @@ const {docClient} = require('./ddb_client')
 
 const CyclicIndex = require('./cy_db_index')
 const CyclicItem = require('./cy_db_item')
+const { validate_strings} = require('./cy_db_utils')
 
 class CyclicCollection{
     constructor(collection, props={}){
+      validate_strings(collection, 'Collection Name')
+
         this.collection = collection
     }
     item(key){
@@ -25,7 +28,7 @@ class CyclicCollection{
       let item = new CyclicItem(this.collection,key)
       return item.delete()
     }
-    
+
     async list(limit){
           let next = null
           let results = []
@@ -53,7 +56,11 @@ class CyclicCollection{
             next = res.LastEvaluatedKey
             results = results.concat(res.Items)
           }while(results && results.length<limit)
-          
+
+          results = results.map(r=>{
+            return CyclicItem.from_dynamo(r)
+          })
+
           return results;
     }
 
@@ -78,7 +85,7 @@ class CyclicCollection{
           if(!res.Items.length){
             return null
           }
-          return res.Items[0]
+          return CyclicItem.from_dynamo(res.Items[0])
     }
 
     index(name){
