@@ -132,7 +132,7 @@ const exclude_cy_keys = function(o){
     delete o.gsi_2
     delete o.gsi_s2
     delete o.gsi_prj
-    delete o.$index
+    delete o.cy_meta
     return o
 }
 class CyclicItem{
@@ -159,8 +159,8 @@ class CyclicItem{
         if(d.keys_gsi_sk){
             props.updated = d.keys_gsi_sk
         }
-        if(d.$index){
-            opts.$index = d.$index
+        if(d.cy_meta && d.cy_meta.$i){
+            opts.$index = d.cy_meta.$i
         }
         return new CyclicItem(collection,key,props,opts)
     }
@@ -227,7 +227,11 @@ class CyclicItem{
             sk: `${this.collection}#${this.key}`,
             keys_gsi: this.collection,
             keys_gsi_sk: new Date().toISOString(),
-            $index: this.$index,
+            cy_meta:{
+                c: this.collection,
+                rt: 'item',
+                $i: this.$index
+            },
             ...props
         }
 
@@ -249,7 +253,11 @@ class CyclicItem{
                     sk: `index#${index.name}`,
                     gsi_s: `${index.name}#${this.props[index.name]}`,
                     gsi_s_sk: `${this.collection}#${this.key}`,
-                    $index: this.$index,
+                    cy_meta:{
+                        c: this.collection,
+                        rt: 'item_index',
+                        $i: this.$index
+                    },
                     ...props
                 }
                 return upsert(index_item,opts)
@@ -299,8 +307,8 @@ class CyclicItemFragment{
         if(d.keys_gsi_sk){
             props.updated = d.keys_gsi_sk
         }
-        if(d.$index){
-            opts.$index = d.$index
+        if(d.cy_meta && d.cy_meta.$i){
+            opts.$index = d.cy_meta.$i
         }
         let parent = new CyclicItem(parent_collection,parent_key)
         return new CyclicItemFragment(type,key,props,parent, opts)
@@ -338,9 +346,17 @@ class CyclicItemFragment{
 
     async set(props, opts={}){
         this.props = {...this.props, ...props}
+        if(opts.$index){
+            this.$index = opts.$index
+        }
         let r = {
             pk: `${this.parent.collection}#${this.parent.key}`,
             sk: `fragment#${this.type}#${this.key}`,
+            cy_meta:{
+                c: this.parent.collection,
+                rt: 'fragment',
+                $i: this.$index
+            },
             ...props
         }
         let index_records = []
@@ -354,6 +370,11 @@ class CyclicItemFragment{
                     sk: `fragment#index#${this.type}#${index.name}`,
                     gsi_s: `${index.name}#${this.props[index.name]}`,
                     gsi_s_sk: `${this.parent.collection}#${this.parent.key}`,
+                    cy_meta:{
+                        c: this.parent.collection,
+                        rt: 'fragment_index',
+                        $i: this.$index
+                    },
                     ...props
                 }
                 return upsert(index_item,opts)

@@ -24,6 +24,9 @@ const run = async function(){
         $index : ['color']
     })
     res = await animals.index('color').find('orange')
+
+
+    
     // res = await animals.delete('leo')
     
     // res = await CyclicDb.item('apps','a').set({
