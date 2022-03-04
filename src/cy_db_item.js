@@ -359,7 +359,7 @@ class CyclicItemFragment{
         if(opts.$index){
             this.$index = opts.$index
             r.cy_meta.$i = opts.$index
-            
+
             index_records = opts.$index.map(idx=>{
                 let index = {
                     name: idx,
@@ -403,9 +403,13 @@ class CyclicItemFragment{
             
         let res = await docClient.send(new QueryCommand(params))
 
-        return res.Items.map(r=>{
+        let results = res.Items.map(r=>{
             return CyclicItemFragment.from_dynamo(r)
         })
+        if(this.key && !this.key.length){
+            return results[0]
+        }
+        return results
     }
 
     async list(){
