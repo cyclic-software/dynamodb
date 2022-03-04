@@ -1,7 +1,7 @@
 {
     "type": "commonjs",
     "name": "cyclic-dynamodb",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "description": "",
     "main": "src/index.js",
     "scripts": {
