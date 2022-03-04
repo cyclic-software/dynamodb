@@ -5,28 +5,38 @@ const db = require('../src/')
 
 const run = async function(){
     let res
+    let users = db.collection('users')
+    res = await users
+   .item('asdf')
+   .fragment('pending_hooks',`build_asdf`).set({
+     app: 'asdfasdf',
+     repo: {}
+   })
+   
+
+
     let animals = db.collection('animals')
     res = await animals.set('leo', {
         type:'cat',
         color:'orange'
     },{
-        $index: ['color']
+        // $index: ['color']
     })
 
-    res = await animals.list()
-    res = await animals.latest()
-    res = await animals.index('color').find('orange')
+    // res = await animals.list()
+    // res = await animals.latest()
+    // res = await animals.index('color').find('orange')
 
-    res = await animals.item('cat').fragment('c').set({
-        p:1,
-        color:'orange'
-    },{
-        $index : ['color']
-    })
-    res = await animals.index('color').find('orange')
+    // res = await animals.item('cat').fragment('c').set({
+    //     p:1,
+    //     color:'orange'
+    // },{
+    //     $index : ['color']
+    // })
+    // res = await animals.index('color').find('orange')
 
 
-    
+
     // res = await animals.delete('leo')
     
     // res = await CyclicDb.item('apps','a').set({

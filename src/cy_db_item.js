@@ -73,6 +73,7 @@ let upsert = async function(item,opts){
         ReturnConsumedCapacity:"TOTAL",
         ReturnValues:"ALL_OLD",
     }
+    console.log(record)
     if(opts.condition){
       record.Expected = opts.condition
     }
@@ -218,9 +219,6 @@ class CyclicItem{
 
      async set(props, opts={}){
         this.props = {...this.props, ...props}
-        if(opts.$index){
-            this.$index = opts.$index
-        }
 
         let r = {
             pk: `${this.collection}#${this.key}`,
@@ -230,13 +228,15 @@ class CyclicItem{
             cy_meta:{
                 c: this.collection,
                 rt: 'item',
-                $i: this.$index
             },
             ...props
         }
 
         let index_records = []
         if(opts.$index){
+            this.$index = opts.$index
+            r.cy_meta.$i = opts.$index
+
             opts.$index.forEach(idx=>{
                 let prop_keys = Object.keys(props)
                 if(!prop_keys.includes(idx)){
@@ -346,21 +346,20 @@ class CyclicItemFragment{
 
     async set(props, opts={}){
         this.props = {...this.props, ...props}
-        if(opts.$index){
-            this.$index = opts.$index
-        }
         let r = {
             pk: `${this.parent.collection}#${this.parent.key}`,
             sk: `fragment#${this.type}#${this.key}`,
             cy_meta:{
                 c: this.parent.collection,
                 rt: 'fragment',
-                $i: this.$index
             },
             ...props
         }
         let index_records = []
         if(opts.$index){
+            this.$index = opts.$index
+            r.cy_meta.$i = opts.$index
+            
             index_records = opts.$index.map(idx=>{
                 let index = {
                     name: idx,
