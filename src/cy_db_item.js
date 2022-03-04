@@ -73,7 +73,7 @@ let upsert = async function(item,opts){
         ReturnConsumedCapacity:"TOTAL",
         ReturnValues:"ALL_OLD",
     }
-    console.log(record)
+    // console.log(record)
     if(opts.condition){
       record.Expected = opts.condition
     }
@@ -406,7 +406,7 @@ class CyclicItemFragment{
         let results = res.Items.map(r=>{
             return CyclicItemFragment.from_dynamo(r)
         })
-        if(this.key && this.key.length){
+        if(this.key && !this.key.length){
             return results[0]
         }
         return results
