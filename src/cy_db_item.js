@@ -406,7 +406,7 @@ class CyclicItemFragment{
         let results = res.Items.map(r=>{
             return CyclicItemFragment.from_dynamo(r)
         })
-        if(this.key && !this.key.length){
+        if(this.key && this.key.length){
             return results[0]
         }
         return results
