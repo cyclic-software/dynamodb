@@ -407,7 +407,11 @@ class CyclicItemFragment{
             return CyclicItemFragment.from_dynamo(r)
         })
         if(this.key && this.key.length){
-            return results[0]
+            if(results.length){
+                return results[0]
+            }else{
+                return null
+            }
         }
         return results
     }
