@@ -29,8 +29,7 @@ class CyclicCollection{
       return item.delete()
     }
 
-    async list(limit){
-          let next = null
+    async list(limit=10000, next = null){
           let results = []
           do{
             var params = {
@@ -55,13 +54,18 @@ class CyclicCollection{
 
             next = res.LastEvaluatedKey
             results = results.concat(res.Items)
-          }while(results && results.length<limit)
+          }while(next && results.length<limit)
 
           results = results.map(r=>{
             return CyclicItem.from_dynamo(r)
           })
-
-          return results;
+          let result = {
+            results
+          }
+          if(next){
+            result.next = next
+          }
+          return result;
     }
 
     async latest(){

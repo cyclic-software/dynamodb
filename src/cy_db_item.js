@@ -118,10 +118,6 @@ const list_sks = async function(pk,sk_prefix = null){
 }
 
 
-  
-
-
-
 const exclude_cy_keys = function(o){
     delete o.pk
     delete o.sk
@@ -213,8 +209,9 @@ class CyclicItem{
         if(!res.Items.length){
             return null
         }
-        this.props = exclude_cy_keys(res.Items[0])
-        return this
+        return CyclicItem.from_dynamo(res.Items[0])
+        // this.props = exclude_cy_keys(res.Items[0])
+        // return this
     }
 
      async set(props, opts={}){

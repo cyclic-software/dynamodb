@@ -1,196 +1,101 @@
-# db-sdk
+# cyclic-dynamodb
 
-###to fix:
-`undefined` keys should not be allowed, validate key types
-add delete method on collection for an item
-delete method returns a bunch of garbage
-delete didnt delete index records created from blank index
+NodeJS SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases. 
 
+Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk simplifies the DynamoDB interface and enables collection organization of records, queries and data scheme discovery among other features.
+
+> The sdk and database feature are in preview - use it with the assumption that the interface and data structures will change
+
+## Prerequisites 
+- A cyclic app with database enabled
+  - Databases are in preview - request access on Discord >> https://discord.gg/huhcqxXCbE
+- For use on local:
+  - AWS credentials set in environment (available on an app's database tab)
+
+## Getting started
+1. Install
+    ```
+    npm install cyclic-dynamodb
+    ```
+2. Copy the temporary credentials from the cyclic console and set them in the shell environment where your code will be running.
+<p align="center">
+    <img src="./examples/console.png" width="500"/>
+</p>
+
+> Credentials are required only for connecting to the database from local and expire after one hour, don't add them to an environment configuration.
+
+3. Set the database name as an environment variable before requiring the sdk - this can be added to environment configurations. 
+    ```js
+    process.env.CYCLIC_DB = 'your-url-subdomainCyclicDB'
+    const db = require('cyclic-dynamodb')
+    ```
+----------
+
+# Example
 
 ```js
+// example.js
 
-process.env.CYCLIC_DB = 'CyclicDB'
-const CyclicDb = require('cyclic-dynamodb')
+process.env.CYCLIC_DB = 'your-url-subdomainCyclicDB'
+const db = require('cyclic-dynamodb')
 
-let res
-      res = await CyclicDb.item('apps','a').set({
-        name: 'mike',
-        zip:19027,
-        val: 'val'
-    },{
-        $index:['name']
-    })
-    
-    res = await CyclicDb.item('apps','a').set({
-        name: 'mike',
-        zip:19027
-    },{
-        $index:['name'],
-        $unset:['val']
-    })
+const run = async function(){s
+    let animals = db.collection('animals')
 
-    res = await CyclicDb.item('apps','a').get()
-    res = await CyclicDb.item('apps','a').fragment('bbb').set({
-        abc:10
-    })
-    res = await CyclicDb.item('apps','a').fragment('bbb').get()
-    res = await CyclicDb.item('apps','a').fragment('bbb').list()
-    res = await CyclicDb.item('apps','a').indexes()
-
-
-    res = await CyclicDb.index('name').find('mike')
-
-    res = await CyclicDb.collection('apps').list()
-    res = await CyclicDb.collection('apps').latest()
-    res = await CyclicDb.collection('apps').item('a').get()
-    res = await CyclicDb.collection('apps').find('name','mike')
-```
-
-
-
-
-## Items
-
-simple create/update
-```js
-CyclicDb.item('users','korostelevm').set({
-        email:'korostelevm@gmail.com',
-        zip_code: '19027',
-        company: 'cyclic',
-        github_login: 'korostelevm',
-    })
-```
-
-get 
-```js
-CyclicDb.item('users','korostelevm').get()
-```
-
-with indexing opts
-delete - will delete everything under users#korostelevm including indexs and fragments
-```js
-CyclicDb.item('users','korostelevm').delete()
-```
-
-with indexing opts
-```js
-CyclicDb.item('users','korostelevm').set({
-        email:'korostelevm@gmail.com',
-        zip_code: '19027',
-        company: 'cyclic',
-        github_login: 'korostelevm',
-    },{
-        indexBy:[
-            'zip_code',
-            'company'
-            ]
-
-    })
-```
-
-list indexes
-```js
-CyclicDb.item('users','korostelevm').indexes()
-```
-
-list fragments
-```js
-CyclicDb.item('users','korostelevm').fragments()
-```
-
-unset field (mongo style), indexby must be there for unset to happen in index rows
-```js
-CyclicDb.item('users','korostelevm').set({
-        email:'korostelevm@gmail.com',
-        zip_code: '19027',
-        company: 'cyclic',
-        github_login: 'korostelevm',
-    },{
-        indexBy:[
-            'zip_code',
-            'company'
-            ],
-        $unset:{
-            company: ''   
-        }
-
-    })
-```
-
-## Fragments
-
-like a child of an item, stored at the same pk as the item with different sks
-can be treated like items 
-
-set
-```js
-CyclicDb.item('users','korostelevm')
-    .fragment('github')
-    .set({
-        login:'asdf',
-        id:'asdfasfd'
-    },{
-        indexBy:[...],
-        $unset:{...}
+    // create an item in collection with key "leo"
+    let leo = await animals.set('leo', {
+        type:'cat',
+        color:'orange'
     })
 
-    
-CyclicDb.item('users','korostelevm')
-    .fragment('identity','github')
-    .set({
-        login:'asdf',
-        id:'asdfasfd'
-    },{
-        indexBy:[...],
-        $unset:{...}
-    })
-
+    // get an item at key "leo" from collection animals
+    let item = await animals.get('leo')
+    console.log(item)
+}
+run()
 
 ```
 
+## Collection Items
+```JSON
+{
+  "collection": "animals",
+  "key": "luna",
+  "props": {
+    "updated": "2022-03-23T13:02:12.702Z",
+    "created": "2022-03-23T12:32:02.526Z",
+    "color": "orange",
+    "type": "cat"
+  },
+  "$index": [
+    "color"
+  ]
+}
 
-get
-```js
-CyclicDb.item('users','korostelevm')
-    .fragment('github').get()
 ```
 
-list
-```js
-CyclicDb.item('users','korostelevm')
-    .fragment('identity').list()
-```
+# Fragments
+With the cyclic.sh data model, items can have `fragments`. These can be thought of as **children or attachments** to items. 
 
-list indexes - what idnexes are there for this fragment
-```js
-CyclicDb.item('users','korostelevm')
-    .fragment('identity').indexes()
-```
+Another way to think of fragments is by thinking of an item itself as its own collection of other items that are stored closely together. 
 
+An example use case for a user record would be something like:
+- item user: name, last name, id
+  - fragment home: address, city
+  - fragment work: company name, position, work address
 
-## indexes
-find items with index key-value
-```js
- CyclicDb.index('name').find('ice cream')
-```
+Fragments objects look just like items but give you a way to better organize your data with higher query performance. 
 
-## Collections
+## Example:
 
-get latest
 ```js
-CyclicDb.collection('users').latest()
-```
+let users = db.collection('users')
 
-list all with limit
-```js
-CyclicDb.collection('users').list(10)
-```
+await users.item('mike')
+        .fragment('work').set({
+            company: 'cyclic'
+        })
 
-set item
-```js
-CyclicDb.collection('users').set('key',{properties},{options})
-```
-get item
-```js
-CyclicDb.collection('users').get('key')
+let mikes_work = await users.item('mike').fragment('work').get()
+
 ```
