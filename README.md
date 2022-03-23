@@ -19,7 +19,7 @@ Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk s
     ```
 2. Copy the temporary credentials from the cyclic console and set them in the shell environment where your code will be running.
 <p align="center">
-    <img src="./examples/console.png" width="500"/>
+    <img src="https://github.com/cyclic-software/db-sdk/blob/main/examples/console.png?raw=true" width="500"/>
 </p>
 
 > Credentials are required only for connecting to the database from local and expire after one hour, don't add them to an environment configuration.

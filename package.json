@@ -7,9 +7,19 @@
     "scripts": {
         "p": "cd src && npm version patch && cd .. &&  npm publish"
     },
-    "keywords": [],
     "author": "",
     "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cyclic-software/db-sdk.git"
+    },
+    "homepage": "https://github.com/cyclic-software/db-sdk",
+    "keywords": [
+        "aws",
+        "dynamodb",
+        "database",
+        "cyclic"
+    ],
     "devDependencies": {},
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.53.0",
