@@ -1,6 +1,7 @@
 
 process.env.CYCLIC_DB = 'glamorous-battledress-tickCyclicDB'
 const db = require('../src/')
+CyclicDb.collection('app_stacks').item(req.params.app).fragment('environment').get()
 
 const run = async function(){
     // instantiate a collection
