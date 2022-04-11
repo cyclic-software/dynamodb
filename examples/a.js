@@ -1,7 +1,7 @@
 
-process.env.CYCLIC_DB = 'glamorous-battledress-tickCyclicDB'
+process.env.CYCLIC_DB = 'CyclicDB'
+// process.env.CYCLIC_DB = 'glamorous-battledress-tickCyclicDB'
 const db = require('../src/')
-CyclicDb.collection('app_stacks').item(req.params.app).fragment('environment').get()
 
 const run = async function(){
     // instantiate a collection
@@ -18,12 +18,12 @@ const run = async function(){
     console.log(item)
 
     // delete 'leo'
-    await animals.delete('leo')
+    // await animals.delete('leo')
 
     // create an animal item indexed by its color
     let luna = await animals.set('luna', {
         type:'cat',
-        color:'orange'
+        color:'black'
     },{
         $index: ['color']
     })    
@@ -46,7 +46,17 @@ const run = async function(){
     console.log('all_animals',all_animals)
 
 }
-run()
+
+const scan = async function(){
+    let animals = db.collection('animals')
+    let res = await animals.filter()
+    let start = Date.now()
+    res = await animals.filter()
+    console.log(Date.now()-start)
+    console.log(res)
+}
+scan()
+// run()
 
 // const run = async function(){
 //     let res
