@@ -6,6 +6,68 @@ const CyclicIndex = require('./cy_db_index')
 const CyclicItem = require('./cy_db_item')
 const { validate_strings} = require('./cy_db_utils')
 
+
+function paths(item) {
+  function iter(r, p) {
+    var keys = Object.keys(r);
+    if (typeof r == 'object' && keys.length) {
+      return keys.forEach(x => iter(r[x], p.concat(x)));
+    }
+
+    result.push(p);
+  }
+  var result = [];
+  iter(item, []);
+  return result;
+}
+
+function path_get(o,p){
+  let prop = p.shift()
+  if(prop){
+      return path_get(o[prop],p)
+  }else{
+      return o
+  }
+}
+
+const gen_expression = function(q_obj){
+  let p = paths(q_obj)
+  let expression = []
+  let attr_vals = {}
+  
+  let attr_names = {}
+  let names = [...new Set(p.flat())].reduce((a,n,i)=>{
+      let nn = `#k${i}${n}`
+      attr_names[nn]= n
+      return {...a, [n]: nn}
+  },{})
+
+  if(p.flat().length){
+     p.forEach((path,prop_idx)=>{
+        let exp = path.map((path_el,depth)=>{return names[path_el]})
+        let v = path_get(q_obj,path)
+        let vn = `:v${prop_idx}`
+        attr_vals[vn] = v
+        expression.push(`${exp.join('.')} = ${vn}`)
+    })
+  }
+  // // do not get index item as result
+  expression.push(`(cy_meta.rt = :vvitem OR cy_meta.rt = :vvfragment)`)
+  attr_vals[`:vvitem`] = 'item'
+  attr_vals[`:vvfragment`] = 'fragment'
+      
+  expression = expression.join(' AND ')
+  return{
+    attr_names,
+    attr_vals,
+    expression,
+  }
+
+  
+}
+
+
+
 class CyclicCollection{
     constructor(collection, props={}){
       validate_strings(collection, 'Collection Name')
@@ -28,49 +90,37 @@ class CyclicCollection{
       let item = new CyclicItem(this.collection,key)
       return item.delete()
     }
-    async filter(filter_query, segments=3, next = null){
-      let q = {
-        color:'black'
-      }
 
-      let scans = Array.from({length: segments}, (_, index) => index + 1);
-      let filter_expression = []
-      let attr_names = {}
-      let attr_vals = {}
+
+    async filter(q={}, segments=3, next = null){
+      if(segments>5){
+        segments = 5
+      }
       
-
-      Object.keys(q).forEach((k,i)=>{
-        let v =  q[k]
-        attr_names[`#k${i}`] = k
-        attr_vals[`:v${i}`] = v
-        filter_expression.push(`#k${i} = :v${i}`)
-      })
-
-      // do not get index item as result
-      filter_expression.push(`(cy_meta.rt = :vitem OR cy_meta.rt = :vfragment)`)
-      attr_vals[`:vitem`] = 'item'
-      attr_vals[`:vfragment`] = 'fragment'
-
-      let filter = {
-        expression:`${filter_expression.join(' AND ')}`,
-        attr_names,
-        attr_vals,
-      }
-
-      console.log(filter)
+      let scans = Array.from({length: segments}, (_, index) => index + 1);
+      
+      let filter = gen_expression(q)
+      filter.expression = `${filter.expression} AND cy_meta.#kc = :vcol`
+      filter.attr_names[`#kc`] = 'c'
+      filter.attr_vals[`:vcol`] = this.collection
+      
       let r = {
         results: []
       }
+
       let segment_results = await Promise.all(scans.map(s=>{
         return  this.parallel_scan(filter, s-1, segments)
           
       }))
+
       segment_results.forEach(s=>{
         s.results.forEach(sr=>{r.results.push(sr)})
       })
       
       return r
     }
+
+    
 
     async parallel_scan(filter, segment, total_segments, limit=50000 ,  next = null){
         let results = []
@@ -93,7 +143,6 @@ class CyclicCollection{
         }while(next && results.length<limit)
 
         results = results.map(r=>{
-          console.log(JSON.stringify(r,null,2))
           return CyclicItem.from_dynamo(r)
         })
         let result = {
