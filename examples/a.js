@@ -1,6 +1,5 @@
 
-process.env.CYCLIC_DB = 'CyclicDB'
-// process.env.CYCLIC_DB = 'glamorous-battledress-tickCyclicDB'
+process.env.CYCLIC_DB = 'glamorous-battledress-tickCyclicDB'
 const db = require('../src/')
 
 const run = async function(){
