@@ -5,6 +5,7 @@
     "description": "",
     "main": "src/index.js",
     "scripts": {
+        "test":"npx jest",
         "p": "cd src && npm version patch && cd .. &&  npm publish"
     },
     "author": "",
@@ -21,8 +22,7 @@
         "cyclic"
     ],
     "devDependencies": {
-        "jest": "^27.5.1",
-        "jest-json-schema": "^6.1.0"
+        "jest": "^27.5.1"
     },
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.53.0",
