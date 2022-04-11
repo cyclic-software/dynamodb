@@ -30,11 +30,10 @@ class CyclicCollection{
     }
     async filter(filter_query, segments=3, next = null){
       let q = {
-        color:'orange'
+        color:'black'
       }
 
       let scans = Array.from({length: segments}, (_, index) => index + 1);
-      // console.log(scans)
       let filter_expression = []
       let attr_names = {}
       let attr_vals = {}
@@ -46,6 +45,11 @@ class CyclicCollection{
         attr_vals[`:v${i}`] = v
         filter_expression.push(`#k${i} = :v${i}`)
       })
+
+      // do not get index item as result
+      filter_expression.push(`(cy_meta.rt = :vitem OR cy_meta.rt = :vfragment)`)
+      attr_vals[`:vitem`] = 'item'
+      attr_vals[`:vfragment`] = 'fragment'
 
       let filter = {
         expression:`${filter_expression.join(' AND ')}`,

@@ -55,8 +55,38 @@ const scan = async function(){
     console.log(Date.now()-start)
     console.log(res)
 }
-scan()
+// scan()
 // run()
+
+function paths(item) {
+    function iter(r, p) {
+      var keys = Object.keys(r);
+      if (typeof r == 'object' && keys.length) {
+        return keys.forEach(x => iter(r[x], p.concat(x)));
+      }
+      result.push(p);
+    }
+    var result = [];
+    iter(item, []);
+    return result;
+  }
+
+const traverse = function(){
+    let q = {
+        color: 'orange',
+        address:{
+            city: 'philadelphia'
+        }
+    }
+    let p = paths(q)
+    console.log(p)
+    
+}
+
+
+
+traverse()
+
 
 // const run = async function(){
 //     let res
