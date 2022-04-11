@@ -20,7 +20,10 @@
         "database",
         "cyclic"
     ],
-    "devDependencies": {},
+    "devDependencies": {
+        "jest": "^27.5.1",
+        "jest-json-schema": "^6.1.0"
+    },
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.53.0",
         "@aws-sdk/lib-dynamodb": "^3.53.0"

@@ -5,66 +5,8 @@ const {docClient} = require('./ddb_client')
 const CyclicIndex = require('./cy_db_index')
 const CyclicItem = require('./cy_db_item')
 const { validate_strings} = require('./cy_db_utils')
+const { gen_expression } = require('./expressions')
 
-
-function paths(item) {
-  function iter(r, p) {
-    var keys = Object.keys(r);
-    if (typeof r == 'object' && keys.length) {
-      return keys.forEach(x => iter(r[x], p.concat(x)));
-    }
-
-    result.push(p);
-  }
-  var result = [];
-  iter(item, []);
-  return result;
-}
-
-function path_get(o,p){
-  let prop = p.shift()
-  if(prop){
-      return path_get(o[prop],p)
-  }else{
-      return o
-  }
-}
-
-const gen_expression = function(q_obj){
-  let p = paths(q_obj)
-  let expression = []
-  let attr_vals = {}
-  
-  let attr_names = {}
-  let names = [...new Set(p.flat())].reduce((a,n,i)=>{
-      let nn = `#k${i}${n}`
-      attr_names[nn]= n
-      return {...a, [n]: nn}
-  },{})
-
-  if(p.flat().length){
-     p.forEach((path,prop_idx)=>{
-        let exp = path.map((path_el,depth)=>{return names[path_el]})
-        let v = path_get(q_obj,path)
-        let vn = `:v${prop_idx}`
-        attr_vals[vn] = v
-        expression.push(`${exp.join('.')} = ${vn}`)
-    })
-  }
-  // // do not get index item as result
-  expression.push(`(cy_meta.rt = :vvitem OR cy_meta.rt = :vvfragment)`)
-  attr_vals[`:vvitem`] = 'item'
-  attr_vals[`:vvfragment`] = 'fragment'
-      
-  expression = expression.join(' AND ')
-  return{
-    attr_names,
-    attr_vals,
-    expression,
-  }
-
-  
-}
 
 
 
@@ -96,7 +38,7 @@ class CyclicCollection{
       if(segments>5){
         segments = 5
       }
-      
+
       let scans = Array.from({length: segments}, (_, index) => index + 1);
       
       let filter = gen_expression(q)
