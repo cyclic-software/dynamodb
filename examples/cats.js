@@ -44,6 +44,8 @@ const run = async function(){
     let all_animals =  await animals.list()
     console.log('all_animals',all_animals)
 
+
+    // filter by object (does not support arrays yets)
     // filter animals by color
     let black_animals = await animals.filter({color:"black"})
     console.log(black_animals)
