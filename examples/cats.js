@@ -1,58 +1,34 @@
 
-process.env.CYCLIC_DB = 'glamorous-battledress-tickCyclicDB'
-const db = require('../src/')
+process.env.CYCLIC_DB = 'CyclicDB'
+const CyclicDb = require('../src/')
 
 const run = async function(){
-    // instantiate a collection
-    let animals = db.collection('animals')
-    
-    // create an item in collection with key "leo"
-    let leo = await animals.set('leo', {
-        type:'cat',
-        color:'orange'
-    })
+    let stack_id = 'calm-tan-onesies'
+    let domains =await CyclicDb.collection('alt_domains').index('stack_id').find(stack_id)
+    console.log(domains)
+    // domains = _.sortBy(domains.results, d=>{return d.props.created})
+    domains = domains.results.map(d=>{
+      return {
+        domain: d.key,
+        subdomain: d.key.split(".")[0],
+        created: d.props.created,
+        updated: d.props.updated,
+        status: d.props.status
+      }
+    }).reverse();
+    let active_domains = domains.filter(d=>{return d.status !=='deleting'})
+    let active_domain = {}
+    if(active_domains.length ){
+      active_domain = active_domains[0]
+      if((moment() - moment(active_domain.updated) < 10000) && active_domain.status == 'created'){
+        active_domain.status = 'cooldown'
+      }
+      if((moment() - moment(active_domain.updated) > (5*60*1000)) && active_domain.status != 'created'){
+        active_domain.status = 'failed'
+      }
+    }
+    console.log(active_domain)
 
-    // get an item at key "leo" from collection animals
-    let item = await animals.get('leo')
-    console.log(item)
-
-    // delete 'leo'
-    // await animals.delete('leo')
-
-    // create an animal item indexed by its color
-    let luna = await animals.set('luna', {
-        type:'cat',
-        color:'black'
-    },{
-        $index: ['color']
-    })    
-    console.log(luna)
-
-    item = await animals.get('luna')
-    console.log(JSON.stringify(item,null,2))
-
-    // find orange animals
-    let orange_animals = await animals.index('color').find('orange')
-    console.log('orange_animals', orange_animals)
-
-
-    // get newest item in collection 
-    let new_animal = await animals.latest()
-    console.log('new_animal',new_animal)
-
-    // list all animals - will auto-paginate, limit and next token can be provided
-    let all_animals =  await animals.list()
-    console.log('all_animals',all_animals)
-
-
-    // filter by object (does not support arrays yets)
-    // filter animals by color
-    let black_animals = await animals.filter({color:"black"})
-    console.log(black_animals)
-    
-    // filter animals by color
-    let orange_cats = await animals.filter({color:"orange", type:"cat"})
-    console.log(orange_cats)
 }
 
 run()
