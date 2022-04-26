@@ -1,11 +1,11 @@
 {
     "type": "commonjs",
     "name": "cyclic-dynamodb",
-    "version": "0.0.18",
+    "version": "0.0.19",
     "description": "",
     "main": "src/index.js",
     "scripts": {
-        "test":"npx jest",
+        "test": "npx jest",
         "p": "cd src && npm version patch && cd .. &&  npm publish"
     },
     "author": "",
