@@ -1,5 +1,7 @@
 # cyclic-dynamodb
 
+[![CI](https://github.com/cyclic-software/db-sdk/actions/workflows/test.yaml/badge.svg)](https://github.com/cyclic-software/db-sdk/actions/workflows/test.yaml)
+
 NodeJS SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases. 
 
 Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk simplifies the DynamoDB interface and enables collection organization of records, queries and data scheme discovery among other features.
