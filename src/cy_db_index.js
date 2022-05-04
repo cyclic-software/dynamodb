@@ -11,7 +11,7 @@ class CyclicIndex {
 
   async find(key) {
     let limit = 10000;
-    let next = null;
+    let next = undefined;
     let results = [];
     do {
       let params = {
