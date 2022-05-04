@@ -64,7 +64,7 @@ class CyclicCollection{
 
     
 
-    async parallel_scan(filter, segment, total_segments, limit=50000 ,  next = null){
+    async parallel_scan(filter, segment, total_segments, limit=50000 ,  next = undefined){
         let results = []
         do{
           var params = {
@@ -100,7 +100,7 @@ class CyclicCollection{
 
 
 
-    async list(limit=10000, next = null){
+    async list(limit=10000, next = undefined){
           let results = []
           do{
             var params = {

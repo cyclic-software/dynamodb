@@ -1,11 +1,11 @@
 {
     "type": "commonjs",
     "name": "cyclic-dynamodb",
-    "version": "0.0.18",
+    "version": "0.0.20",
     "description": "",
     "main": "src/index.js",
     "scripts": {
-        "test":"npx jest",
+        "test": "npx jest",
         "p": "cd src && npm version patch && cd .. &&  npm publish"
     },
     "author": "",
@@ -25,7 +25,7 @@
         "jest": "^27.5.1"
     },
     "dependencies": {
-        "@aws-sdk/client-dynamodb": "3.53.0",
-        "@aws-sdk/lib-dynamodb": "3.53.0"
+        "@aws-sdk/client-dynamodb": "3.82.0",
+        "@aws-sdk/lib-dynamodb": "3.82.0"
     }
 }

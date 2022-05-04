@@ -297,8 +297,10 @@ class CyclicItemFragment{
     }   
 
     static from_dynamo(d){
+        // console.log(d)
         let [parent_collection,parent_key] = d.pk.split('#')
-        let [fragment,type,key] = d.sk.split('#')
+
+        let [type,key,index_name] = d.sk.replace('fragment#','').replace('index#','').split('#')
         let props = {...d}
         let opts = {}
         if(d.keys_gsi_sk){
@@ -312,7 +314,7 @@ class CyclicItemFragment{
     }
 
     async indexes(){
-        let index = await list_sks(`${this.parent.collection}#${this.parent.key}`, `fragment#index#`)
+        let indexes = await list_sks(`${this.parent.collection}#${this.parent.key}`, `fragment#index#`)
         return indexes.map(d=>{
             return d.split('#').slice(-1)[0]
         })
@@ -333,7 +335,7 @@ class CyclicItemFragment{
                 TableName : process.env.CYCLIC_DB,
                 Key: {
                     pk: `${this.parent.collection}#${this.parent.key}`,
-                    sk: `fragment#index#${this.type}#${idx}`,
+                    sk: `fragment#index#${this.type}#${this.key}#${idx}`,
                 }
             })))
         })
@@ -363,7 +365,7 @@ class CyclicItemFragment{
                 }
                 let index_item = {
                     pk: `${this.parent.collection}#${this.parent.key}`,
-                    sk: `fragment#index#${this.type}#${index.name}`,
+                    sk: `fragment#index#${this.type}#${this.key}#${index.name}`,
                     gsi_s: `${index.name}#${this.props[index.name]}`,
                     gsi_s_sk: `${this.parent.collection}#${this.parent.key}`,
                     cy_meta:{
