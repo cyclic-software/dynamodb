@@ -14,4 +14,4 @@ jobs:
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.CYCLIC_DB_NPM_TOKEN }}
-          tag: "dev"
+          tag: "dev" 
