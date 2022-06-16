@@ -1,6 +1,6 @@
 # cyclic-dynamodb
 
-[![CI](https://github.com/cyclic-software/db-sdk/actions/workflows/test.yaml/badge.svg)](https://github.com/cyclic-software/db-sdk/actions/workflows/test.yaml)
+[![CI](https://github.com/cyclic-software/db-sdk/actions/workflows/merge_main.yaml/badge.svg)](https://github.com/cyclic-software/db-sdk/actions/workflows/test.yaml)
 
 NodeJS SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases. 
 
