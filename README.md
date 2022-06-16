@@ -37,11 +37,10 @@ Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk s
 
 ```js
 // example.js
+const CyclicDB = require('cyclic-dynamodb')
+const db = CyclicDB('your-table-name')
 
-process.env.CYCLIC_DB = 'your-url-subdomainCyclicDB'
-const db = require('cyclic-dynamodb')
-
-const run = async function(){s
+const run = async function(){
     let animals = db.collection('animals')
 
     // create an item in collection with key "leo"
