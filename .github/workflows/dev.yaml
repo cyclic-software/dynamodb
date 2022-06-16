@@ -8,7 +8,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   CYCLIC_DB: db-sdkCyclicDB
-  
+
 jobs:
   dev:
     runs-on: ubuntu-latest
@@ -32,5 +32,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.publish.outputs.version }}"
-          release_name: Release ${{ steps.publish.outputs.version }}"
+          tag_name: ${{ steps.publish.outputs.version }}
+          release_name: ${{ steps.publish.outputs.version }}
