@@ -13,5 +13,5 @@ jobs:
           node-version: 12
       - uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.CYCLIC_DB_NPM_TOKEN }}
           dry-run: true
