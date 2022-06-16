@@ -3,7 +3,7 @@ const CyclicCollection = require('./cy_db_collection')
 const CyclicIndex = require('./cy_db_index')
 const CyclicItem = require('./cy_db_item')
 
-class C extends Function{
+class CyclicDb extends Function{
     constructor() {
         super('...args', 'return this._bound._call(...args)')
         this._bound = this.bind(this)
@@ -28,4 +28,4 @@ class C extends Function{
     }
 }
 
-module.exports = new C
+module.exports = new CyclicDb
