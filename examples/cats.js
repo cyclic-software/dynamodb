@@ -1,6 +1,5 @@
 
-process.env.CYCLIC_DB = 'glamorous-battledress-tickCyclicDB'
-const db = require('../src/')
+const db = require('../src/')('glamorous-battledress-tickCyclicDB')
 
 const run = async function(){
     // instantiate a collection
