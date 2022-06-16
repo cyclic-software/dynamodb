@@ -25,7 +25,6 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.CYCLIC_DB_NPM_TOKEN }}
-          tag: "latest" 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
