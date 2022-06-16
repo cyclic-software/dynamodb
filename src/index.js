@@ -12,7 +12,7 @@ class CyclicDb extends Function{
       
     _call(table_name) {
         process.env.CYCLIC_DB = table_name
-        return new C
+        return new CyclicDb
     }
 
     item(collection,key){

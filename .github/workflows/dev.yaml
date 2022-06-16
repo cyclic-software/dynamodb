@@ -4,7 +4,7 @@ on:
     branches:
       - client-instance-creation
 jobs:
-  publish:
+  dev:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -15,7 +15,8 @@ jobs:
         run: |
           npm ci
           npm run test  
-      - uses: JS-DevTools/npm-publish@v1
+      - id: publish
+        uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.CYCLIC_DB_NPM_TOKEN }}
           tag: "dev" 
@@ -23,7 +24,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.publish.outputs.version }}"
+          release_name: Release ${{ steps.publish.outputs.version }}"
