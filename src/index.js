@@ -4,19 +4,36 @@ const CyclicIndex = require('./cy_db_index')
 const CyclicItem = require('./cy_db_item')
 
 class CyclicDb {
+    constructor(){
+        console.log('constructor call')
+        return this
+    }
  
-    static item(collection,key){
+    item(collection,key){
         return new CyclicItem(collection, key)
     }
-
-    static collection(collection){
+ 
+    collection(collection){
         return new CyclicCollection(collection)
     }
 
-    static index(name){
+   index(name){
         return new CyclicIndex(name)
     }
 }
 
 
-module.exports = CyclicDb
+let init = function(table_name){
+    process.env.CYCLIC_DB = table_name
+    return new CyclicDb(table_name)
+
+    
+}
+
+// Function.prototype.valueOf = function() {
+//     this.call(this);
+//     // Optional improvement: avoid `NaN` issues when used in expressions.
+//     return 0; 
+// };
+
+module.exports = new CyclicDb
