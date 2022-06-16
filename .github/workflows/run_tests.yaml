@@ -1,4 +1,4 @@
-name: tests
+name: tests without publish
 
 on:
   pull_request:
