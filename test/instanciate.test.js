@@ -1,7 +1,7 @@
 process.env.AWS_REGION = process.env.AWS_REGION || 'us-east-2'
 
-describe("Db client", () => {
-  test("can be instantiated statically ", async () => {
+describe("require('CyclicDb')", () => {
+  test("can be used as an object relying on env vars ", async () => {
 
   const db = require('cyclic-dynamodb')
 
@@ -25,7 +25,7 @@ describe("Db client", () => {
 
   });
 
-  test("can be instantiated dynamically ", async () => {
+  test("can be called like a function with a table name argument ", async () => {
   delete process.env.CYCLIC_DB 
 
   const CyclicDb = require('cyclic-dynamodb')
