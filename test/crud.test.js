@@ -47,31 +47,31 @@ describe("CRUD Suite from example in README", () => {
     let r = await animals.index('name').find('leo')
     await leo.delete()
     expect(r.results.length).toEqual(1)
-    expect(r.results[0].key).toEqual(id);
+    expect(r.results[0].key).toEqual(key);
 
   })
 
-  // test("delete fragment", async () => {
-  //   let animals = db.collection('animals')
-  //   let leo_fragment = await animals.item('leo').fragment('fr','frname').set({
-  //     data:'fragment'
-  //   },{
-  //     $index: ['data']
-  //   })
+  test("delete fragment", async () => {
+    let animals = db.collection('animals')
+    let leo_fragment = await animals.item('leo').fragment('fr','frname').set({
+      data:'fragment'
+    },{
+      $index: ['data']
+    })
 
-  //   console.log(leo_fragment)
-  //   let r = await animals.index('data').find('fragment')
-  //   console.log(r.results[0])
-  //   expect(r.results.length).toEqual(1)
-  //   expect(r.results[0].key).toEqual('frname');
+    console.log(leo_fragment)
+    let r = await animals.index('data').find('fragment')
+    console.log(r.results[0])
+    expect(r.results.length).toEqual(1)
+    expect(r.results[0].key).toEqual('frname');
 
-  //   await leo_fragment.delete()
-  //   r = await animals.index('data').find('fragment')
-  //   console.log(r)
-  //   expect(r.results.length).toEqual(0)
-  //   // console.log(leo_fragment)
+    await leo_fragment.delete()
+    r = await animals.index('data').find('fragment')
+    console.log(r)
+    expect(r.results.length).toEqual(0)
+    // console.log(leo_fragment)
 
 
-  // })
+  })
 
 });
