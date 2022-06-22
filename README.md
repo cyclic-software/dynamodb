@@ -121,7 +121,7 @@ const run = async function(){
     let leo = await animals.set('leo', {
         type:'cat',
         color:'orange',
-        tt: Math.floor(Date.now() / 1000) + 3
+        ttl: Math.floor(Date.now() / 1000) + 3
     })
 
     // get an item at key "leo" from collection animals
