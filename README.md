@@ -1,6 +1,6 @@
 # cyclic-dynamodb
 
-NodeJS SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases. 
+NodeJS SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases.
 
 [![CI](https://github.com/cyclic-software/db-sdk/actions/workflows/merge_main.yaml/badge.svg)](https://github.com/cyclic-software/db-sdk/actions/workflows/merge_main.yaml)
 
@@ -8,13 +8,15 @@ Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk s
 
 > The sdk and database feature are in preview - use it with the assumption that the interface and data structures will change
 
-## Prerequisites 
+## Prerequisites
+
 - A cyclic app with database enabled
   - Databases are in preview - request access on Discord >> https://discord.gg/huhcqxXCbE
 - For use on local:
   - AWS credentials set in environment (available on an app's database tab)
 
 ## Getting started
+
 1. Install
     ```
     npm install cyclic-dynamodb
@@ -54,13 +56,7 @@ const run = async function(){
     console.log(item)
 }
 run()
-
 ```
-
-
-
-
-
 
 ## Collection Items
 ```JSON
@@ -77,7 +73,6 @@ run()
     "color"
   ]
 }
-
 ```
 
 # Fragments
@@ -104,4 +99,39 @@ await users.item('mike')
 
 let mikes_work = await users.item('mike').fragment('work').get()
 
+```
+
+# TTL - time to live
+
+You optionally may set a TTL for any item. The `ttl` is the UNIX seconds timestamp when the item should expire.
+
+The ttl setting passes through to the [DynamoDB ttl](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html) setting. The expiration is only approximate within a few minutes.
+
+## Example
+
+```js
+// example.js
+const CyclicDB = require('cyclic-dynamodb')
+const db = CyclicDB('your-table-name')
+
+const run = async function(){
+    let animals = db.collection('animals')
+
+    // create an item in collection with key "leo"
+    let leo = await animals.set('leo', {
+        type:'cat',
+        color:'orange',
+        ttl: Math.floor(Date.now() / 1000) + 3
+    })
+
+    // get an item at key "leo" from collection animals
+    let item = await animals.get('leo')
+    console.log(item)
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    item = await animals.get('leo')
+    console.log(item)
+}
+run()
 ```
