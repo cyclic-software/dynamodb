@@ -2,19 +2,29 @@
     "type": "commonjs",
     "name": "cyclic-dynamodb",
     "version": "0.0.25",
-    "description": "",
+    "description": "SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases",
     "main": "src/index.js",
     "scripts": {
         "test": "npx jest",
         "p": "cd src && npm version patch && cd .. &&  npm publish"
     },
-    "author": "",
-    "license": "ISC",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/cyclic-software/db-sdk.git"
+    "author": {
+      "name": "Cyclic Software",
+      "url": "https://www.cyclic.sh"
     },
-    "homepage": "https://github.com/cyclic-software/db-sdk",
+    "contributors": [
+      {
+        "name": "Mike Korostelev",
+        "url": "https://github.com/korostelevm"
+      },
+      {
+        "name": "Kam Lasater",
+        "url": "https://github.com/seekayel"
+      }
+    ],
+    "license": "ISC",
+    "repository": "github:cyclic-software/db-sdk",
+    "homepage": "https://github.com/cyclic-software/db-sdk#readme",
     "keywords": [
         "aws",
         "dynamodb",
