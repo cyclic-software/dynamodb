@@ -111,27 +111,42 @@ The ttl setting passes through to the [DynamoDB ttl](https://docs.aws.amazon.com
 
 ```js
 // example.js
-const CyclicDB = require('cyclic-dynamodb')
-const db = CyclicDB('your-table-name')
+// Expects process.env.CYCLIC_DB to be set with your table name
+const db = require('cyclic-dynamodb')
 
 const run = async function(){
-    let animals = db.collection('animals')
+  let animals = db.collection('animals')
 
-    // create an item in collection with key "leo"
-    let leo = await animals.set('leo', {
-        type:'cat',
-        color:'orange',
-        ttl: Math.floor(Date.now() / 1000) + 3
-    })
+  // CREATE an item in collection with key "leo"
+  let leo = await animals.set('leo', {
+    type:'cat',
+    color:'orange',
+    // ttl: Math.floor(Date.now() / 1000) + 3 // Unix seconds timestamp on which to expire item.
+  })
 
-    // get an item at key "leo" from collection animals
-    let item = await animals.get('leo')
-    console.log(item)
 
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    
-    item = await animals.get('leo')
-    console.log(item)
+  // READ an item at key "leo" from collection animals
+  let item = await animals.get('leo')
+  console.log(item)
+
+
+  // UPDATE - overwrites properties
+  item = await animals.set('leo', {
+    breed: 'Tabby'
+  })
+  console.log(item)
+  item = await animals.get('leo')
+  console.log(item)
+
+
+  // LIST all items in a collection
+  const items = await animals.list()
+  console.log(JSON.stringify(items, null, 2))
+
+
+  // DELETE
+  item = await animals.delete('leo')
+  console.log(item)
 }
 run()
 ```
