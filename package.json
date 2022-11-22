@@ -8,17 +8,23 @@
       "release": "np --any-branch",
       "test": "jest"
     },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/cyclic-software/dynamodb.git"
+    },
     "author": {
-        "name": "Cyclic Software",
-        "url": "https://www.cyclic.sh"
+      "name": "Cyclic Software",
+      "url": "https://www.cyclic.sh"
     },
     "contributors": [
-        "Mike Korostelev (https://github.com/korostelevm)",
-        "Kam Lasater (https://github.com/seekayel)"
+      "Mike Korostelev (https://github.com/korostelevm)",
+      "Kam Lasater (https://github.com/seekayel)"
     ],
-    "license": "ISC",
-    "homepage": "https://github.com/cyclic-software/db-sdk#readme",
-    "repository": "github:cyclic-software/db-sdk",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/cyclic-software/dynamodb/issues"
+    },
+    "homepage": "https://github.com/cyclic-software/dynamodb#readme",
     "keywords": [
         "aws",
         "dynamodb",
