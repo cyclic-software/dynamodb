@@ -5,8 +5,8 @@
     "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
     "main": "src/index.js",
     "scripts": {
-      "release": "np",
-      "test": "npx jest"
+      "release": "np --any-branch",
+      "test": "jest"
     },
     "author": {
         "name": "Cyclic Software",
