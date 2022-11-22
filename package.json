@@ -1,12 +1,16 @@
 {
     "type": "commonjs",
-    "name": "cyclic-dynamodb",
+    "name": "@cyclic.sh/dynamodb",
     "version": "0.0.27",
-    "description": "SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases",
+    "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
     "main": "src/index.js",
     "scripts": {
-        "test": "npx jest",
-        "p": "cd src && npm version patch && cd .. &&  npm publish"
+      "release": "np --any-branch",
+      "test": "jest"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/cyclic-software/dynamodb.git"
     },
     "author": {
       "name": "Cyclic Software",
@@ -16,17 +20,21 @@
       "Mike Korostelev (https://github.com/korostelevm)",
       "Kam Lasater (https://github.com/seekayel)"
     ],
-    "license": "ISC",
-    "homepage": "https://github.com/cyclic-software/db-sdk#readme",
-    "repository": "github:cyclic-software/db-sdk",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/cyclic-software/dynamodb/issues"
+    },
+    "homepage": "https://github.com/cyclic-software/dynamodb#readme",
     "keywords": [
         "aws",
         "dynamodb",
         "database",
-        "cyclic"
+        "cyclic",
+        "cyclic.sh"
     ],
     "devDependencies": {
-        "jest": "^27.5.1"
+        "jest": "^27.5.1",
+        "np": "^7.6.2"
     },
     "dependencies": {
         "@aws-sdk/client-dynamodb": "3.82.0",

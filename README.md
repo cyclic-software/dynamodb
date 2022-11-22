@@ -1,4 +1,4 @@
-# cyclic-dynamodb
+# @cyclic.sh/dynamodb
 
 NodeJS SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases.
 
@@ -19,7 +19,7 @@ Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk s
 
 1. Install
     ```
-    npm install cyclic-dynamodb
+    npm install @cyclic.sh/dynamodb
     ```
 2. Copy the temporary credentials from the cyclic console and set them in the shell environment where your code will be running.
 <p align="center">
@@ -31,7 +31,7 @@ Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk s
 3. Set the database name as an environment variable before requiring the sdk - this can be added to environment configurations. 
     ```js
     process.env.CYCLIC_DB = 'your-url-subdomainCyclicDB'
-    const db = require('cyclic-dynamodb')
+    const db = require('@cyclic.sh/dynamodb')
     ```
 ----------
 
@@ -39,7 +39,7 @@ Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk s
 
 ```js
 // example.js
-const CyclicDB = require('cyclic-dynamodb')
+const CyclicDB = require('@cyclic.sh/dynamodb')
 const db = CyclicDB('your-table-name')
 
 const run = async function(){
