@@ -20,11 +20,11 @@ jobs:
       - name: Run tests
         run: |
           npm ci
-          npm run test  
+          npm run test
       - id: publish
         uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ secrets.CYCLIC_DB_NPM_TOKEN }}
+          token: ${{ secrets.NPM_TOKEN }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
