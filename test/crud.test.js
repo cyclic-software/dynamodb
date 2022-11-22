@@ -1,4 +1,4 @@
-const db = require('cyclic-dynamodb')
+const db = require('../src')
 
 process.env.CYCLIC_DB = process.env.CYCLIC_DB || 'db-sdkCyclicDB'
 process.env.AWS_REGION = process.env.AWS_REGION || 'us-east-2'

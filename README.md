@@ -111,7 +111,7 @@ The ttl setting passes through to the [DynamoDB ttl](https://docs.aws.amazon.com
 
 ```js
 // example.js
-const CyclicDB = require('cyclic-dynamodb')
+const CyclicDB = require('@cyclic.sh/dynamodb')
 const db = CyclicDB('your-table-name')
 
 const run = async function(){
