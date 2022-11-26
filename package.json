@@ -5,46 +5,50 @@
     "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
     "main": "src/index.js",
     "scripts": {
-      "test": "jest"
+        "test": "jest",
+        "prepare": "husky install"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/cyclic-software/dynamodb.git"
+        "type": "git",
+        "url": "git+https://github.com/cyclic-software/dynamodb.git"
     },
     "author": {
-      "name": "Cyclic Software",
-      "url": "https://www.cyclic.sh"
+        "name": "Cyclic Software",
+        "url": "https://www.cyclic.sh"
     },
     "contributors": [
-      "Mike Korostelev (https://github.com/korostelevm)",
-      "Kam Lasater (https://github.com/seekayel)"
+        "Mike Korostelev (https://github.com/korostelevm)",
+        "Kam Lasater (https://github.com/seekayel)"
     ],
     "license": "MIT",
     "bugs": {
-      "url": "https://github.com/cyclic-software/dynamodb/issues"
+        "url": "https://github.com/cyclic-software/dynamodb/issues"
     },
     "homepage": "https://github.com/cyclic-software/dynamodb#readme",
     "keywords": [
-      "aws",
-      "dynamodb",
-      "database",
-      "cyclic",
-      "cyclic.sh",
-      "@cyclic.sh"
+        "aws",
+        "dynamodb",
+        "database",
+        "cyclic",
+        "cyclic.sh",
+        "@cyclic.sh"
     ],
     "engines": {
-      "node": ">=14.20.0"
+        "node": ">=14.20.0"
     },
     "devDependencies": {
-      "jest": "^27.5.1"
+        "@commitlint/cli": "^17.3.0",
+        "@commitlint/config-conventional": "^17.3.0",
+        "husky": "^8.0.2",
+        "jest": "^27.5.1"
     },
     "dependencies": {
         "@aws-sdk/client-dynamodb": "3.82.0",
         "@aws-sdk/lib-dynamodb": "3.82.0"
     },
     "release": {
-      "branches": [
-        "main"
-      ]
+        "branches": [
+            "main"
+        ]
     }
 }
