@@ -2,23 +2,15 @@
 
 NodeJS SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB databases.
 
-[![CI](https://github.com/cyclic-software/db-sdk/actions/workflows/run_tests.yaml/badge.svg)](https://github.com/cyclic-software/db-sdk/actions/workflows/run_tests.yaml)
+[![Discord](https://img.shields.io/discord/895292239633338380)](https://discord.cyclic.sh/support) [![CI](https://github.com/cyclic-software/db-sdk/actions/workflows/run_tests.yaml/badge.svg)](https://github.com/cyclic-software/db-sdk/actions/workflows/run_tests.yaml) [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
-
-![Discord](https://img.shields.io/discord/895292239633338380)
-
-![npm (scoped)](https://img.shields.io/npm/v/@cyclic.sh/dynamodb)
-
-![npm bundle size (scoped)](https://img.shields.io/bundlephobia/minzip/@cyclic.sh/dynamodb)
-
-![node-current (scoped)](https://img.shields.io/node/v/@cyclic.sh/dynamodb)
+[![npm (scoped)](https://img.shields.io/npm/v/@cyclic.sh/dynamodb)](https://www.npmjs.com/package/@cyclic.sh/dynamodb) ![node-current (scoped)](https://img.shields.io/node/v/@cyclic.sh/dynamodb) ![npm bundle size (scoped)](https://img.shields.io/bundlephobia/minzip/@cyclic.sh/dynamodb)
 
 
 
 Together with the Cyclic.sh DynamoDB indexing strategy and data model, the sdk simplifies the DynamoDB interface and enables collection organization of records, queries and data scheme discovery among other features.
 
-> The sdk and database feature are in preview - use it with the assumption that the interface and data structures will change
+> The sdk and database feature are in preview - use it with the assumption that the interface and data structures will change. We use semantic release for versioning so take note of version numbers.
 
 ## Prerequisites
 
