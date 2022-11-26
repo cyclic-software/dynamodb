@@ -30,8 +30,12 @@
         "dynamodb",
         "database",
         "cyclic",
-        "cyclic.sh"
+        "cyclic.sh",
+        "@cyclic.sh"
     ],
+    "engines": {
+      "node": ">=14.20.0"
+    },
     "devDependencies": {
         "jest": "^27.5.1",
         "np": "^7.6.2"
