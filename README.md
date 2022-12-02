@@ -4,7 +4,7 @@ NodeJS SDK for interacting with [Cyclic.sh](https://cyclic.sh) app AWS DynamoDB 
 
 [![Discord](https://img.shields.io/discord/895292239633338380)](https://discord.cyclic.sh/support) [![CI](https://github.com/cyclic-software/db-sdk/actions/workflows/run_tests.yaml/badge.svg)](https://github.com/cyclic-software/db-sdk/actions/workflows/run_tests.yaml) [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-[![npm (scoped)](https://img.shields.io/npm/v/@cyclic.sh/dynamodb)](https://www.npmjs.com/package/@cyclic.sh/dynamodb) ![node-current (scoped)](https://img.shields.io/node/v/@cyclic.sh/dynamodb) ![npm bundle size (scoped)](https://img.shields.io/bundlephobia/minzip/@cyclic.sh/dynamodb)
+[![npm (scoped)](https://img.shields.io/npm/v/@cyclic.sh/dynamodb)](https://www.npmjs.com/package/@cyclic.sh/dynamodb) ![node-current (scoped)](https://img.shields.io/node/v/@cyclic.sh/dynamodb) ![npm bundle size (scoped)](https://img.shields.io/bundlephobia/minzip/@cyclic.sh/dynamodb) [![@cyclic.sh/dynamodb](https://snyk.io/advisor/npm-package/@cyclic.sh/dynamodb/badge.svg)](https://snyk.io/advisor/npm-package/@cyclic.sh/dynamodb)
 
 
 
