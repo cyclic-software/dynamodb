@@ -11,6 +11,10 @@ const { gen_expression } = require('./expressions')
 
 
 class CyclicCollection{
+    /*
+     * @arg {string} collection - name of the collection
+     * @props {object} collection - name of the collection
+     */
     constructor(collection, props={}){
       validate_strings(collection, 'Collection Name')
 
@@ -18,7 +22,7 @@ class CyclicCollection{
     }
     item(key){
       return new CyclicItem(this.collection,key)
-    } 
+    }
     async get(key){
       let item = new CyclicItem(this.collection,key)
       return item.get()
@@ -27,7 +31,7 @@ class CyclicCollection{
       let item = new CyclicItem(this.collection,key)
       return item.set(props,opts)
     }
-    
+
     async delete(key, props, opts){
       let item = new CyclicItem(this.collection,key)
       return item.delete()
@@ -40,36 +44,36 @@ class CyclicCollection{
       }
 
       let scans = Array.from({length: segments}, (_, index) => index + 1);
-      
+
       let filter = gen_expression(q)
       filter.expression = `${filter.expression} AND cy_meta.#kc = :vcol`
       filter.attr_names[`#kc`] = 'c'
       filter.attr_vals[`:vcol`] = this.collection
-      
+
       let r = {
         results: []
       }
 
       let segment_results = await Promise.all(scans.map(s=>{
         return  this.parallel_scan(filter, s-1, segments)
-          
+
       }))
 
       segment_results.forEach(s=>{
         s.results.forEach(sr=>{r.results.push(sr)})
       })
-      
+
       return r
     }
 
-    
+
 
     async parallel_scan(filter, segment, total_segments, limit=50000 ,  next = undefined){
         let results = []
         do{
           var params = {
             TableName: process.env.CYCLIC_DB,
-            Limit: limit, 
+            Limit: limit,
             ScanIndexForward:false,
             Segment: segment,
             TotalSegments:total_segments,

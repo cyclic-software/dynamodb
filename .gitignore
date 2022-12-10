@@ -138,3 +138,6 @@ junit.xml
 
 .DS_Store
 .vscode
+
+# Exclude generated type declarations
+src/**/*.d.ts
