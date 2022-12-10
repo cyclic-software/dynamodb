@@ -6,7 +6,7 @@
     "main": "src/index.js",
     "types": "src/index.d.ts",
     "scripts": {
-      "clean": "rm src/**/*.d.ts",
+      "clean": "find ./src -name '*.d.ts.map' -delete && find ./src -name '*.d.ts' -delete",
       "build": "tsc",
       "test": "jest",
       "prepare": "husky install"
