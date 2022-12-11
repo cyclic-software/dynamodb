@@ -27,7 +27,7 @@ class CyclicIndex {
 
       if (this.collection) {
         (params.KeyConditionExpression = `${params.KeyConditionExpression} and begins_with(gsi_s_sk,:sk)`),
-        (params.ExpressionAttributeValues[":sk"] = `${this.collection}#`);
+          (params.ExpressionAttributeValues[":sk"] = `${this.collection}#`);
       }
 
       let res = await docClient.send(new QueryCommand(params));
@@ -39,12 +39,12 @@ class CyclicIndex {
       return CyclicItem.from_dynamo(r);
     });
     let result = {
-        results
-      }
-      if(next){
-        result.next = next
-      }
-      return result;
+      results,
+    };
+    if (next) {
+      result.next = next;
+    }
+    return result;
   }
 }
 

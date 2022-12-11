@@ -5,8 +5,10 @@
     "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
     "main": "src/index.js",
     "scripts": {
-        "test": "jest",
-        "prepare": "husky install"
+      "prettier:check": "prettier --check src",
+      "prettier:write": "prettier --write src",
+      "test": "jest",
+      "prepare": "husky install"
     },
     "repository": {
         "type": "git",
@@ -39,8 +41,10 @@
     "devDependencies": {
         "@commitlint/cli": "^17.3.0",
         "@commitlint/config-conventional": "^17.3.0",
+        "eslint": "^8.29.0",
         "husky": "^8.0.2",
-        "jest": "^27.5.1"
+        "jest": "^27.5.1",
+        "prettier": "^2.8.1"
     },
     "dependencies": {
         "@aws-sdk/client-dynamodb": "3.82.0",
