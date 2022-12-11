@@ -10,19 +10,31 @@ const { gen_expression } = require('./expressions')
 
 
 
-class CyclicCollection{
+class CyclicCollection {
     /*
+     * Constructs a CyclicCollection that can be used to interact with collection.
      * @arg {string} collection - name of the collection
-     * @props {object} collection - name of the collection
+     * @arg {object} props - optional
      */
     constructor(collection, props={}){
       validate_strings(collection, 'Collection Name')
-
-        this.collection = collection
+      this.collection = collection
     }
+
+    /*
+     * Constructs a new CyclicItem addressed by key inside of this collection
+     * @arg {string} key - the key to assign to the new item
+     * @returns {CyclicItem} - new item for the key in this collection
+     */
     item(key){
       return new CyclicItem(this.collection,key)
     }
+
+    /*
+     * Retrieve data from dynamodb associated to key instead of this collection.
+     * @arg {string} key - the key to lookup the item
+     * @returns {CyclicItem} - retrieves the data associated with key from dynamodb
+     */
     async get(key){
       let item = new CyclicItem(this.collection,key)
       return item.get()
