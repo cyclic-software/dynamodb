@@ -1,58 +1,62 @@
 {
-    "type": "commonjs",
-    "name": "@cyclic.sh/dynamodb",
-    "version": "0.0.27",
-    "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
-    "main": "src/index.js",
-    "scripts": {
-      "prettier:check": "prettier --check src",
-      "prettier:write": "prettier --write src",
-      "test": "jest",
-      "prepare": "husky install"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/cyclic-software/dynamodb.git"
-    },
-    "author": {
-        "name": "Cyclic Software",
-        "url": "https://www.cyclic.sh"
-    },
-    "contributors": [
-        "Mike Korostelev (https://github.com/korostelevm)",
-        "Kam Lasater (https://github.com/seekayel)"
-    ],
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/cyclic-software/dynamodb/issues"
-    },
-    "homepage": "https://github.com/cyclic-software/dynamodb#readme",
-    "keywords": [
-        "aws",
-        "dynamodb",
-        "database",
-        "cyclic",
-        "cyclic.sh",
-        "@cyclic.sh"
-    ],
-    "engines": {
-        "node": ">=14.20.0"
-    },
-    "devDependencies": {
-        "@commitlint/cli": "^17.3.0",
-        "@commitlint/config-conventional": "^17.3.0",
-        "eslint": "^8.29.0",
-        "husky": "^8.0.2",
-        "jest": "^27.5.1",
-        "prettier": "^2.8.1"
-    },
-    "dependencies": {
-        "@aws-sdk/client-dynamodb": "3.82.0",
-        "@aws-sdk/lib-dynamodb": "3.82.0"
-    },
-    "release": {
-        "branches": [
-            "main"
-        ]
-    }
+  "type": "commonjs",
+  "name": "@cyclic.sh/dynamodb",
+  "version": "0.0.27",
+  "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
+  "main": "src/index.js",
+  "scripts": {
+    "prettier:check": "prettier --check src",
+    "prettier:write": "prettier --write src",
+    "test": "jest",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyclic-software/dynamodb.git"
+  },
+  "author": {
+    "name": "Cyclic Software",
+    "url": "https://www.cyclic.sh"
+  },
+  "contributors": [
+    "Mike Korostelev (https://github.com/korostelevm)",
+    "Kam Lasater (https://github.com/seekayel)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cyclic-software/dynamodb/issues"
+  },
+  "homepage": "https://github.com/cyclic-software/dynamodb#readme",
+  "keywords": [
+    "aws",
+    "dynamodb",
+    "database",
+    "cyclic",
+    "cyclic.sh",
+    "@cyclic.sh"
+  ],
+  "engines": {
+    "node": ">=14.20.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
+    "eslint": "^8.29.0",
+    "husky": "^8.0.2",
+    "jest": "^27.5.1",
+    "lint-staged": "^13.1.0",
+    "prettier": "^2.8.1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.82.0",
+    "@aws-sdk/lib-dynamodb": "3.82.0"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown src"
+  }
 }
