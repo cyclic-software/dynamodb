@@ -5,6 +5,8 @@
   "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
   "main": "src/index.js",
   "scripts": {
+    "eslint:check": "eslint --fix-dry-run .",
+    "eslint:write": "eslint --fix .",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
     "test": "jest",
