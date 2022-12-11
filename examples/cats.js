@@ -1,57 +1,58 @@
+const db = require("../src/")("glamorous-battledress-tickCyclicDB");
 
-const db = require('../src/')('glamorous-battledress-tickCyclicDB')
+const run = async function () {
+  // instantiate a collection
+  let animals = db.collection("animals");
 
-const run = async function(){
-    // instantiate a collection
-    let animals = db.collection('animals')
-    
-    // create an item in collection with key "leo"
-    let leo = await animals.set('leo', {
-        type:'cat',
-        color:'orange'
-    })
+  // create an item in collection with key "leo"
+  let leo = await animals.set("leo", {
+    type: "cat",
+    color: "orange",
+  });
 
-    // get an item at key "leo" from collection animals
-    let item = await animals.get('leo')
-    console.log(item)
+  // get an item at key "leo" from collection animals
+  let item = await animals.get("leo");
+  console.log(item);
 
-    // delete 'leo'
-    // await animals.delete('leo')
+  // delete 'leo'
+  // await animals.delete('leo')
 
-    // create an animal item indexed by its color
-    let luna = await animals.set('luna', {
-        type:'cat',
-        color:'black'
-    },{
-        $index: ['color']
-    })    
-    console.log(luna)
+  // create an animal item indexed by its color
+  let luna = await animals.set(
+    "luna",
+    {
+      type: "cat",
+      color: "black",
+    },
+    {
+      $index: ["color"],
+    }
+  );
+  console.log(luna);
 
-    item = await animals.get('luna')
-    console.log(JSON.stringify(item,null,2))
+  item = await animals.get("luna");
+  console.log(JSON.stringify(item, null, 2));
 
-    // find orange animals
-    let orange_animals = await animals.index('color').find('orange')
-    console.log('orange_animals', orange_animals)
+  // find orange animals
+  let orange_animals = await animals.index("color").find("orange");
+  console.log("orange_animals", orange_animals);
 
+  // get newest item in collection
+  let new_animal = await animals.latest();
+  console.log("new_animal", new_animal);
 
-    // get newest item in collection 
-    let new_animal = await animals.latest()
-    console.log('new_animal',new_animal)
+  // list all animals - will auto-paginate, limit and next token can be provided
+  let all_animals = await animals.list();
+  console.log("all_animals", all_animals);
 
-    // list all animals - will auto-paginate, limit and next token can be provided
-    let all_animals =  await animals.list()
-    console.log('all_animals',all_animals)
+  // filter by object (does not support arrays yets)
+  // filter animals by color
+  let black_animals = await animals.filter({ color: "black" });
+  console.log(black_animals);
 
+  // filter animals by color
+  let orange_cats = await animals.filter({ color: "orange", type: "cat" });
+  console.log(orange_cats);
+};
 
-    // filter by object (does not support arrays yets)
-    // filter animals by color
-    let black_animals = await animals.filter({color:"black"})
-    console.log(black_animals)
-    
-    // filter animals by color
-    let orange_cats = await animals.filter({color:"orange", type:"cat"})
-    console.log(orange_cats)
-}
-
-run()
+run();

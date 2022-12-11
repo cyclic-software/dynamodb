@@ -23,7 +23,7 @@ let make_sub_expr = function (item, expr_type, expr_prefix = "") {
   };
 };
 
-let upsert = async function (item, opts) {
+const upsert = async function (item, opts) {
   let ops = [];
 
   let { attr_names, attr_vals, expression } = make_sub_expr(item, "set", "s");
