@@ -23,5 +23,4 @@ jobs:
           npm ci
           npm run prettier:check
           npm run eslint:check
-          npm run build
           npm run test
