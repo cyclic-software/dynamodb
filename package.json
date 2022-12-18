@@ -3,11 +3,11 @@
     "name": "@cyclic.sh/dynamodb",
     "version": "0.0.27",
     "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
-    "main": "src/index.js",
-    "types": "src/index.d.ts",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-      "clean": "find ./src -name '*.d.ts.map' -delete && find ./src -name '*.d.ts' -delete",
-      "build": "tsc",
+      "clean": "rm dist/*",
+      "build": "tsc && cp src/*.js dist/",
       "test": "jest",
       "prepare": "husky install"
     },

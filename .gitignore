@@ -140,4 +140,4 @@ junit.xml
 .vscode
 
 # Exclude generated type declarations
-src/**/*.d.ts
+dist
