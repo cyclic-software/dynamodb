@@ -3,9 +3,10 @@
     "src/**/*.js"
   ],
   "compilerOptions": {
-    "declaration": true,
-    "emitDeclarationOnly": true,
     "allowJs": true,
-    "declarationMap": true
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
   }
 }
