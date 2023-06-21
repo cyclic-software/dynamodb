@@ -1,8 +1,8 @@
-const { QueryCommand } = require("@aws-sdk/lib-dynamodb");
-const { docClient } = require("./ddb_client");
-const CyclicItem = require("./cy_db_item");
-const { validate_strings } = require("./cy_db_utils");
-class CyclicIndex {
+import { QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { docClient } from "./ddb_client";
+import CyclicItem from "./cy_db_item";
+import { validate_strings } from "./cy_db_utils";
+export class CyclicIndex {
   constructor(name, collection = null, props = {}) {
     validate_strings(name, "Index Name");
     this.name = name;
@@ -27,7 +27,7 @@ class CyclicIndex {
 
       if (this.collection) {
         (params.KeyConditionExpression = `${params.KeyConditionExpression} and begins_with(gsi_s_sk,:sk)`),
-        (params.ExpressionAttributeValues[":sk"] = `${this.collection}#`);
+          (params.ExpressionAttributeValues[":sk"] = `${this.collection}#`);
       }
 
       let res = await docClient.send(new QueryCommand(params));
@@ -39,13 +39,13 @@ class CyclicIndex {
       return CyclicItem.from_dynamo(r);
     });
     let result = {
-        results
-      }
-      if(next){
-        result.next = next
-      }
-      return result;
+      results,
+    };
+    if (next) {
+      result.next = next;
+    }
+    return result;
   }
 }
 
-module.exports = CyclicIndex;
+export default CyclicIndex;

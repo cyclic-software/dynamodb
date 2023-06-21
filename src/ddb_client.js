@@ -1,6 +1,6 @@
 
-const { DynamoDBDocumentClient } = require("@aws-sdk/lib-dynamodb")
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb")
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 const REGION = process.env.AWS_REGION || 'us-east-2'
 const ddbClient = new DynamoDBClient({ region: REGION });
@@ -21,11 +21,10 @@ const unmarshallOptions = {
 
 const translateConfig = { marshallOptions, unmarshallOptions };
 
-const docClient = DynamoDBDocumentClient.from(ddbClient, translateConfig);
+export const docClient = DynamoDBDocumentClient.from(
+  ddbClient,
+  translateConfig
+);
 
 
-
-
-module.exports = {
-    docClient
-}
+export default docClient;
