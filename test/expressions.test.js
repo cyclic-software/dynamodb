@@ -1,4 +1,4 @@
-const { paths, path_get, gen_expression } = require("../src/expressions");
+import { paths, path_get, gen_expression } from "../src/expressions";
 
 describe("Expressions utility | paths", () => {
   test("determines paths from nested object", async () => {
@@ -30,19 +30,20 @@ describe("Expressions utility | paths", () => {
 
   test("fails on array query values", async () => {
     let cat_query = {
-         type: "cat",
-        color: ["orange"],
+      type: "cat",
+      color: ["orange"],
     };
-    let error
-    try{
-        let p = paths(cat_query);
-    }catch(e){
-        error = e
+    let error;
+    try {
+      let p = paths(cat_query);
+    } catch (e) {
+      error = e;
     }
 
-    expect(error.message).toEqual('Array values are not supported in queries. Received: [\"orange\"]')
+    expect(error.message).toEqual(
+      'Array values are not supported in queries. Received: ["orange"]'
+    );
   });
-
 });
 
 describe("Expressions utility | paths_get", () => {
@@ -123,21 +124,17 @@ describe("Expressions utility | gen_expression", () => {
       expression:
         "#k0type = :v0 AND #k1color = :v1 AND #k2address.#k3city = :v2 AND #k2address.#k4state = :v3 AND #k5lives = :v4 AND (cy_meta.rt = :vvitem OR cy_meta.rt = :vvfragment)",
     });
-
   });
 
   test("generates a dynamodb scan filter expression from blank object", async () => {
     let exp = gen_expression({});
     expect(exp).toEqual({
-        attr_names: {
-        },
-        attr_vals: {
-          ":vvfragment": "fragment",
-          ":vvitem": "item",
-        },
-        expression: "(cy_meta.rt = :vvitem OR cy_meta.rt = :vvfragment)",
-      });
-    
-  })
-
+      attr_names: {},
+      attr_vals: {
+        ":vvfragment": "fragment",
+        ":vvitem": "item",
+      },
+      expression: "(cy_meta.rt = :vvitem OR cy_meta.rt = :vvfragment)",
+    });
+  });
 });
