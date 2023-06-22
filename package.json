@@ -58,8 +58,12 @@
         "@aws-sdk/lib-dynamodb": "3.82.0"
     },
     "release": {
-        "branches": [
-            "main"
-        ]
+      "branches": [
+        "main",
+        {
+          "name": "beta",
+          "prerelease": true
+        }
+      ]
     }
 }
