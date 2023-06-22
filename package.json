@@ -8,7 +8,7 @@
     "scripts": {
       "clean": "rm dist/*",
       "build": "tsc && cp src/*.js dist/",
-      "test": "jest",
+      "test": "NODE_OPTIONS=--experimental-vm-modules jest",
       "prepare": "husky install"
     },
     "repository": {
