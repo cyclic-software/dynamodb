@@ -3,7 +3,7 @@ process.env.AWS_REGION = process.env.AWS_REGION || "us-east-2";
 // import { CyclicDb } from "../src";
 import db_import from "../src";
 
-describe("require('CyclicDb')", () => {
+describe("import db from ../src", () => {
   test("can be used as an object relying on env vars ", async () => {
     const db = db_import;
 

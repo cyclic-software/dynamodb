@@ -31,17 +31,41 @@ Together with the Cyclic.sh DynamoDB indexing strategy and data model, the SDK s
 
 > Credentials are required only for connecting to the database from local and expire after one hour, don't add them to an environment configuration.
 
-3. Set the database name as an environment variable before requiring the SDK - this can be added to environment configurations. 
+3. Set the database name as an environment variable before requiring the SDK - this can be added to environment configurations.
+
+    ```js
+    process.env.CYCLIC_DB = 'your-url-subdomainCyclicDB'
+    import db from '@cyclic.sh/dynamodb'
+    ```
     ```js
     process.env.CYCLIC_DB = 'your-url-subdomainCyclicDB'
     const db = require('@cyclic.sh/dynamodb')
     ```
 ----------
 
-# Example
+## ESM or CJS
+
+You can use either esm or cjs imports. Any of the below examples can be altered with the import type of you choice.
+
+### ESM
+```js
+// example.mjs
+import CyclicDB from '@cyclic.sh/dynamodb'
+const db = CyclicDB('your-table-name')
+```
+
+### CommonJS
 
 ```js
-// example.js
+// example.cjs
+const CyclicDB = require('@cyclic.sh/dynamodb')
+const db = CyclicDB('your-table-name')
+```
+
+# Examples
+
+```js
+// example.cjs
 const CyclicDB = require('@cyclic.sh/dynamodb')
 const db = CyclicDB('your-table-name')
 
@@ -113,7 +137,7 @@ The TTL setting passes through to the [DynamoDB TTL](https://docs.aws.amazon.com
 ## Example
 
 ```js
-// example.js
+// example.cjs
 const CyclicDB = require('@cyclic.sh/dynamodb')
 const db = CyclicDB('your-table-name')
 
