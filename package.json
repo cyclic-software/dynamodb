@@ -1,13 +1,20 @@
 {
-    "type": "module",
     "name": "@cyclic.sh/dynamodb",
     "version": "0.0.27",
     "description": "SDK for interacting with Cyclic.sh (https://cyclic.sh) app AWS DynamoDB databases",
-    "exports": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "type": "module",
+    "types": "./dist/esm/index.d.ts",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        }
+    },
     "scripts": {
       "clean": "rm dist/*",
-      "build": "tsc && cp src/*.js dist/",
+      "build": "rm -fr dist/* && tsc -p tsconfig-esm.json && tsc -p tsconfig-cjs.json && ./scripts/generatePackageJson.sh",
       "test": "NODE_OPTIONS=--experimental-vm-modules jest",
       "prepare": "husky install"
     },

@@ -1,6 +1,7 @@
 .*
-src
+commitlint.config.cjs
 examples
+scripts
+src
 test
-commitlint.config.js
-tsconfig.json
+tsconfig*.json
