@@ -12,6 +12,9 @@
             "require": "./dist/cjs/index.js"
         }
     },
+    "files": [
+        "dist"
+    ],
     "scripts": {
       "clean": "rm dist/*",
       "build": "rm -fr dist/* && tsc -p tsconfig-esm.json && tsc -p tsconfig-cjs.json && ./scripts/generatePackageJson.sh",

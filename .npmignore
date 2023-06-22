@@ -1,6 +1,7 @@
 .*
 commitlint.config.cjs
 examples
+jest.config.js
 scripts
 src
 test
