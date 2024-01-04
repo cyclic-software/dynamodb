@@ -1,12 +1,10 @@
 process.env.AWS_REGION = process.env.AWS_REGION || 'us-east-2'
+const table = process.env.CYCLIC_DB || 'db-sdkCyclicDB'
 
 describe("require('CyclicDb')", () => {
   test("can be used as an object relying on env vars ", async () => {
 
-    const db = require('../src')
-
-    process.env.CYCLIC_DB = process.env.CYCLIC_DB || 'db-sdkCyclicDB'
-    process.env.AWS_REGION = process.env.AWS_REGION || 'us-east-2'
+  const db = require('../src')
 
     let animals = db.collection('animals')
 
@@ -29,7 +27,7 @@ describe("require('CyclicDb')", () => {
     delete process.env.CYCLIC_DB
 
     const CyclicDb = require('../src')
-    const db = CyclicDb('db-sdkCyclicDB')
+    const db = CyclicDb(table)
 
     let animals = db.collection('animals')
 
