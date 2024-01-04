@@ -15,9 +15,9 @@ describe("CRUD Suite from example in README", () => {
 
     // create an item in collection with key "leo"
     let leo = await animals.set(key, {
-        type:'cat',
-        name: 'leo',
-        color:'orange'
+      type: 'cat',
+      name: 'leo',
+      color: 'orange'
     })
 
     console.log(leo)
@@ -37,10 +37,10 @@ describe("CRUD Suite from example in README", () => {
     let animals = db.collection('animals')
     let key = createKey()
     let leo = await animals.set(key, {
-        type:'cat',
-        name: 'leo',
-        color:'orange'
-    },{
+      type: 'cat',
+      name: 'leo',
+      color: 'orange'
+    }, {
       $index: ['name']
     })
 
@@ -53,9 +53,9 @@ describe("CRUD Suite from example in README", () => {
 
   test("delete fragment", async () => {
     let animals = db.collection('animals')
-    let leo_fragment = await animals.item('leo').fragment('fr','frname').set({
-      data:'fragment'
-    },{
+    let leo_fragment = await animals.item('leo').fragment('fr', 'frname').set({
+      data: 'fragment'
+    }, {
       $index: ['data']
     })
 

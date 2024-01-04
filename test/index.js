@@ -1,6 +1,6 @@
 
 const { DynamoDBDocumentClient } = require("@aws-sdk/lib-dynamodb")
-const {  UpdateCommand } = require("@aws-sdk/lib-dynamodb")
+const { UpdateCommand } = require("@aws-sdk/lib-dynamodb")
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb")
 
 
@@ -35,9 +35,9 @@ let sk = 'fragment#code_scan#'
 const query_params = {
     TableName: process.env.CYCLIC_DB,
     KeyConditionExpression: 'pk = :pk and sk = :sk',
-    ExpressionAttributeValues:{
-        ':pk':pk,
-        ':sk':sk
+    ExpressionAttributeValues: {
+        ':pk': pk,
+        ':sk': sk
     }
 };
 //list
@@ -45,9 +45,9 @@ const query_params = {
 const list_params = {
     TableName: process.env.CYCLIC_DB,
     KeyConditionExpression: 'pk = :pk and begins_with(sk,:sk)',
-    ExpressionAttributeValues:{
-        ':pk':pk,
-        ':sk':sk
+    ExpressionAttributeValues: {
+        ':pk': pk,
+        ':sk': sk
     }
 };
 
@@ -55,17 +55,17 @@ const list_params = {
 let item = {
     pk: 'asdf',
     sk: 'asdf',
-    a:'a',
-    b:123,
-    c:false
+    a: 'a',
+    b: 123,
+    c: false
 }
 let expression = []
 let attr_names = {}
 let attr_vals = {}
 
-Object.keys(item).forEach((k,i)=>{
-    if(k=='pk' || k == 'sk' || item[k] === undefined){return true}
-    if(item[k] === '') {throw new Error(`pk key [${k}] should never be blank`)}
+Object.keys(item).forEach((k, i) => {
+    if (k == 'pk' || k == 'sk' || item[k] === undefined) { return true }
+    if (item[k] === '') { throw new Error(`pk key [${k}] should never be blank`) }
     let v = item[k]
     attr_names[`#k${i}`] = k
     attr_vals[`:v${i}`] = v
@@ -76,25 +76,25 @@ expression = `set ${expression.join(', ')}`
 console.log(expression)
 const update_params = {
     TableName: process.env.CYCLIC_DB,
-    Key:{
+    Key: {
         pk: item.pk,
         sk: item.sk || item.pk
-      },
+    },
     UpdateExpression: expression,
     ExpressionAttributeNames: attr_names,
     ExpressionAttributeValues: attr_vals
 };
 
- const run = async () => {
-  try {
-      const data = await docClient.send(new UpdateCommand(update_params));
-    // const data = await docClient.send(new QueryCommand(list_params));
-    console.log("Success. Item details: ", data);
-    // console.log("Success. Item details: ", data.Items);
-    return data;
-  } catch (err) {
-    console.log("Error", err.message);
-    // console.log("Error", err.$response.body.req);
-  }
+const run = async () => {
+    try {
+        const data = await docClient.send(new UpdateCommand(update_params));
+        // const data = await docClient.send(new QueryCommand(list_params));
+        console.log("Success. Item details: ", data);
+        // console.log("Success. Item details: ", data.Items);
+        return data;
+    } catch (err) {
+        console.log("Error", err.message);
+        // console.log("Error", err.$response.body.req);
+    }
 };
 run();
