@@ -39,12 +39,12 @@ class CyclicIndex {
       return CyclicItem.from_dynamo(r);
     });
     let result = {
-        results
-      }
-      if(next){
-        result.next = next
-      }
-      return result;
+      results
+    }
+    if (next) {
+      result.next = next
+    }
+    return result;
   }
 }
 
