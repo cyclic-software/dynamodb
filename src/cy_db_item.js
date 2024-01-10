@@ -34,7 +34,7 @@ let upsert = async function (item, opts) {
     expression = `${expression}, #ku = :ku, #kc = if_not_exists(#kc,:kc)`
 
     if (opts['$unset']) {
-        for (let k of Object.keys(opts.$unset)) {
+        for (let k of opts.$unset) {
             if (Object.keys(item).includes(k)) {
                 throw `${k}: property can not appear in both set and $unset`
             }
